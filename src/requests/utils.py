@@ -1033,7 +1033,7 @@ def get_auth_from_url(url):
 
 def _remove_path_dot_segments(path):
     """Removes dot segments from a URL path as per RFC 3986 Section 5.2.4."""
-    segments = path.split('/')
+    segments = path.split("/")
     output = []
     for segment in segments:
         if segment == '..':
@@ -1041,7 +1041,10 @@ def _remove_path_dot_segments(path):
                 output.pop()
         elif segment != '.':
             output.append(segment)
-    return '/' + '/'.join(output)
+
+    # Ensure that double slashes are reduced to a single slash
+    return "/" + "/".join(output).replace("//", "/")
+
 
 
 def check_header_validity(header):
