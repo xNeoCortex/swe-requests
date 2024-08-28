@@ -582,6 +582,10 @@ class Session(SessionRedirectMixin):
             "allow_redirects": allow_redirects,
         }
         resp = self.send(prep, **send_kwargs)
+            "proxies": proxies,
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
 
         return resp
 
@@ -672,13 +676,13 @@ class Session(SessionRedirectMixin):
         """
         # Set defaults that the hooks can utilize to ensure they always have
         # the correct parameters to reproduce the previous request.
-        proxies = kwargs.get("proxies")
-        stream = kwargs.get("stream")
-        verify = kwargs.get("verify")
-        cert = kwargs.get("cert")
-
         settings = self.merge_environment_settings(
-            request.url, proxies, stream, verify, cert
+            request.url,
+            proxies=kwargs.get("proxies"),
+            stream=kwargs.get("stream"),
+            verify=kwargs.get("verify"),
+            cert=kwargs.get("cert"),
+
         )
 
         # Update kwargs with environment settings
