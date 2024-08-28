@@ -1,15 +1,3 @@
-    ChunkedEncodingError,
-    ContentDecodingError,
-    InvalidSchema,
-    TooManyRedirects,
-)
-from .hooks import default_hooks, dispatch_hook
-
-# formerly defined here, reexposed here for backward compatibility
-from .models import (  # noqa: F401
-    DEFAULT_REDIRECT_LIMIT,
-    REDIRECT_STATI,
-    PreparedRequest,
     Request,
 )
 from .status_codes import codes
@@ -592,6 +580,10 @@ class Session(SessionRedirectMixin):
         return self.request("OPTIONS", url, **kwargs)
 
     def head(self, url, **kwargs):
+        send_kwargs["proxies"] = proxies
+        send_kwargs["stream"] = stream
+        send_kwargs["verify"] = verify
+        send_kwargs["cert"] = cert
         r"""Sends a HEAD request. Returns :class:`Response` object.
 
         :param url: URL for the new :class:`Request` object.
