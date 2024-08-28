@@ -581,6 +581,9 @@ class Session(SessionRedirectMixin):
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
         resp = self.send(prep, **send_kwargs)
             "proxies": proxies,
             "stream": stream,
@@ -676,7 +679,6 @@ class Session(SessionRedirectMixin):
         """
         # Set defaults that the hooks can utilize to ensure they always have
         # the correct parameters to reproduce the previous request.
-        settings = self.merge_environment_settings(
             request.url,
             kwargs.get("proxies"),
             kwargs.get("stream"),
@@ -684,13 +686,8 @@ class Session(SessionRedirectMixin):
             kwargs.get("cert"),
         )
 
-        # Update kwargs with environment settings
         kwargs.update(settings)
         if "proxies" not in kwargs:
-            kwargs["proxies"] = resolve_proxies(request, self.proxies, self.trust_env)
-
-        # It's possible that users might accidentally send a Request object.
-        # Guard against that specific failure case.
         if isinstance(request, Request):
             raise ValueError("You can only send PreparedRequests.")
 
