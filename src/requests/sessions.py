@@ -565,10 +565,6 @@ class Session(SessionRedirectMixin):
         proxies = proxies or {}
 
         # Send the request.
-        send_kwargs = {
-            "timeout": timeout,
-            "allow_redirects": allow_redirects,
-        send_kwargs = {
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
