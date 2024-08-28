@@ -1,4 +1,42 @@
 """Tests for Requests."""
+import os
+import requests
+from requests.exceptions import SSLError
+
+
+def test_custom_ca_bundle():
+    # Set CA certificates file to custom local file
+    os.environ["REQUESTS_CA_BUNDLE"] = "/etc/ssl/certs/ca-certificates.crt"
+
+    # Create request object
+    req = requests.Request(
+        method="GET",  # any method
+        url="https://www.example_site.mydomain.com/path",  # any url for which the default cert file does not have a cert for
+    )
+
+    with requests.Session() as s:
+        respA = s.request(  # Success: will use CA certificates from REQUESTS_CA_BUNDLE
+            method=req.method,
+            url=req.url,
+        )
+        assert respA.status_code == 200
+
+    with requests.Session() as s:
+        respB = s.send(  # Success: will use CA certificates from REQUESTS_CA_BUNDLE if explicitly specified
+            request=req.prepare(), verify=os.environ["REQUESTS_CA_BUNDLE"]
+        )
+
+        assert respB.status_code == 200
+
+    with requests.Session() as s:
+        try:
+            respC = s.send(  # Error: Will try to use default CA certificates instead of those specified by REQUESTS_CA_BUNDLE
+                request=req.prepare()
+            )
+
+            assert respC.status_code == 200
+        except SSLError:
+            pass
 
 import collections
 import contextlib
