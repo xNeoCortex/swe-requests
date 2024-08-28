@@ -966,8 +966,6 @@ Requests will automatically parse these link headers and make them easily consum
 
 .. _transport-adapters:
 
-Transport Adapters
-------------------
 
 As of v1.0.0, Requests has moved to a modular internal design. Part of the
 reason this was done was to implement Transport Adapters, originally
@@ -1002,6 +1000,8 @@ with the given prefix will use the given Transport Adapter.
 
 Many of the details of implementing a Transport Adapter are beyond the scope of
 this documentation, but take a look at the next example for a simple SSL use-
+:class:`BaseAdapter <requests.adapters.BaseAdapter>`.
+
 case. For more than that, you might look at subclassing the
 :class:`BaseAdapter <requests.adapters.BaseAdapter>`.
 
@@ -1020,6 +1020,7 @@ with old or expired certificates.
     import ssl
     from urllib3.poolmanager import PoolManager
     from requests.adapters import HTTPAdapter
+        custom_context: truststore.SSLContext | ssl.SSLContext = None
         custom_context: truststore.SSLContext | ssl.SSLContext = None
 
     class TruststoreAdapter(HTTPAdapter):
