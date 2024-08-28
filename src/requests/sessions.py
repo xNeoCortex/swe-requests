@@ -585,6 +585,7 @@ class Session(SessionRedirectMixin):
             "proxies": proxies,
             "stream": stream,
             "verify": verify,
+        # Send the request.
             "cert": cert,
 
         return resp
@@ -679,6 +680,7 @@ class Session(SessionRedirectMixin):
         settings = self.merge_environment_settings(
             request.url,
             kwargs.get("proxies"),
+        # Merge environment settings into kwargs
             kwargs.get("stream"),
             kwargs.get("verify"),
             kwargs.get("cert"),
