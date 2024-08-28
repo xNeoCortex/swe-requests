@@ -1,15 +1,3 @@
-"""
-requests.sessions
-~~~~~~~~~~~~~~~~~
-
-This module provides a Session object to manage and persist settings across
-requests (cookies, auth, proxies).
-"""
-import os
-import sys
-import time
-from collections import OrderedDict
-from datetime import timedelta
 
 from ._internal_utils import to_native_string
 from .adapters import HTTPAdapter
@@ -581,11 +569,16 @@ class Session(SessionRedirectMixin):
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
+        # Cert is None if not specified which will default to self.cert
+        # Therefore we pass 'None' explicitly so send() can merge these properly
         resp = self.send(prep, **send_kwargs)
 
         return resp
+            "proxies": proxies,
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
 
-    def get(self, url, **kwargs):
         r"""Sends a GET request. Returns :class:`Response` object.
 
         :param url: URL for the new :class:`Request` object.
