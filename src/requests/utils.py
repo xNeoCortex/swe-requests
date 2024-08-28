@@ -1031,17 +1031,18 @@ def get_auth_from_url(url):
     return auth
 
 
-def _remove_path_dot_segments(path):
-    """Removes dot segments from a URL path as per RFC 3986 Section 5.2.4."""
-    segments = path.split('/')
-    output = []
-    for segment in segments:
-        if segment == '..':
-            if output:
-                output.pop()
-        elif segment != '.':
-            output.append(segment)
-    return '/' + '/'.join(output)
+def _normalize_path(path):
+    """Normalize path by removing dot segments and reducing multiple slashes to one."""
+    # Remove dot segments
+    segments = []
+    for segment in path.split("/"):
+        if segment == "..":
+            if segments:
+                segments.pop()
+        elif segment != ".":
+            segments.append(segment)
+    # Reduce multiple slashes to one
+    return re.sub(r"/{2,}", "/", "/".join(segments))
 
 
 def check_header_validity(header):
