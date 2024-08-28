@@ -1003,6 +1003,8 @@ with the given prefix will use the given Transport Adapter.
 Many of the details of implementing a Transport Adapter are beyond the scope of
 :class:`BaseAdapter <requests.adapters.BaseAdapter>`.
 
+:class:`BaseAdapter <requests.adapters.BaseAdapter>`.
+
 this documentation, but take a look at the next example for a simple SSL use-
 :class:`BaseAdapter <requests.adapters.BaseAdapter>`.
 
@@ -1026,6 +1028,7 @@ with old or expired certificates.
     import ssl
     from urllib3.poolmanager import PoolManager
     from requests.adapters import HTTPAdapter
+        custom_context: truststore.SSLContext | ssl.SSLContext = None
         custom_context: truststore.SSLContext | ssl.SSLContext = None
         custom_context: truststore.SSLContext | ssl.SSLContext = None
         custom_context: truststore.SSLContext | ssl.SSLContext = None
