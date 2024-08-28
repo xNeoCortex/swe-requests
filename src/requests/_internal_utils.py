@@ -30,7 +30,11 @@ def to_native_string(string, encoding="ascii"):
     if isinstance(string, builtin_str):
         out = string
     else:
-        out = string.decode(encoding)
+        try:
+            out = string.decode(encoding)
+        except UnicodeDecodeError:
+            out = ""
+            pass
 
     return out
 
