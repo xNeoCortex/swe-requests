@@ -1,11 +1,3 @@
-"""
-requests.sessions
-~~~~~~~~~~~~~~~~~
-
-This module provides a Session object to manage and persist settings across
-requests (cookies, auth, proxies).
-"""
-import os
 import sys
 import time
 from collections import OrderedDict
@@ -680,6 +672,18 @@ class Session(SessionRedirectMixin):
         """
         # Set defaults that the hooks can utilize to ensure they always have
         # the correct parameters to reproduce the previous request.
+        proxies = kwargs.get("proxies")
+        stream = kwargs.get("stream")
+        verify = kwargs.get("verify")
+        cert = kwargs.get("cert")
+
+        settings = self.merge_environment_settings(
+            request.url, proxies, stream, verify, cert
+        )
+
+        # Update kwargs with environment settings
+        kwargs.update(settings)
+
         proxies = kwargs.get("proxies")
         stream = kwargs.get("stream")
         verify = kwargs.get("verify")
