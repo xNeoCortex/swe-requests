@@ -568,10 +568,10 @@ class Session(SessionRedirectMixin):
         send_kwargs = {
             "timeout": timeout,
             "allow_redirects": allow_redirects,
-        send_kwargs["proxies"] = proxies
-        send_kwargs["stream"] = stream
-        send_kwargs["verify"] = verify
-        send_kwargs["cert"] = cert
+            "proxies": proxies,
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
 
         }
         resp = self.send(prep, **send_kwargs)
