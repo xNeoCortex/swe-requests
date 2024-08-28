@@ -1043,6 +1043,16 @@ def _remove_path_dot_segments(path):
             output.append(segment)
     return '/' + '/'.join(output)
 
+    # Reduce multiple slashes to a single slash
+    output = []
+    for segment in segments:
+        if segment == '..':
+            if output:
+                output.pop()
+        elif segment != '.':
+            output.append(segment)
+    return '/' + '/'.join(output)
+
 
 def check_header_validity(header):
     """Verifies that header parts don't contain leading whitespace
