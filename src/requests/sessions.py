@@ -672,12 +672,18 @@ class Session(SessionRedirectMixin):
     def send(self, request, **kwargs):
         """Send a given PreparedRequest.
 
+        proxies = kwargs.get("proxies")
+        stream = kwargs.get("stream")
+        verify = kwargs.get("verify")
+        cert = kwargs.get("cert")
+
         :rtype: requests.Response
         """
         # Set defaults that the hooks can utilize to ensure they always have
         # the correct parameters to reproduce the previous request.
         settings = self.merge_environment_settings(
             request.url,
+
             proxies=kwargs.get("proxies"),
             stream=kwargs.get("stream"),
             verify=kwargs.get("verify"),
