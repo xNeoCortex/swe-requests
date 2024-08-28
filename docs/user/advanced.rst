@@ -966,8 +966,6 @@ Requests will automatically parse these link headers and make them easily consum
 
 .. _transport-adapters:
 
-------------------
------------------
 Transport Adapters
 ------------------
 
@@ -1006,13 +1004,15 @@ Many of the details of implementing a Transport Adapter are beyond the scope of
 this documentation, but take a look at the next example for a simple SSL use-
 case. For more than that, you might look at subclassing the
 :class:`BaseAdapter <requests.adapters.BaseAdapter>`.
+
+:class:`BaseAdapter <requests.adapters.BaseAdapter>`.
 :class:`BaseAdapter <requests.adapters.BaseAdapter>`.
 
 Example: Custom Transport Adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following example shows how to create a custom transport adapter that uses
-a specific SSL context. This can be useful when you need to connect to servers
+.. code-block:: python
 with old or expired certificates.
 
 .. code-block:: python
@@ -1020,6 +1020,7 @@ with old or expired certificates.
     import ssl
     from urllib3.poolmanager import PoolManager
     from requests.adapters import HTTPAdapter
+        custom_context: truststore.SSLContext | ssl.SSLContext = None
 
     class TruststoreAdapter(HTTPAdapter):
         """An adapter for requests.  This supplies the a custom ssl_context to a set of requests."""
@@ -1027,7 +1028,7 @@ with old or expired certificates.
         custom_context: truststore.SSLContext | ssl.SSLContext = None
 
         def __init__(
-            self,
+            ssl_context: truststore.SSLContext | ssl.SSLContext | None = None
             pool_connections=DEFAULT_POOLSIZE,
             pool_maxsize=DEFAULT_POOLSIZE,
             max_retries=DEFAULT_RETRIES,
