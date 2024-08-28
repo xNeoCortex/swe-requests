@@ -73,6 +73,10 @@ You can also apply this setting to your global Git config:
 git config --global fetch.fsck.badTimezone ignore
 ```
 
+## Contributors
+
+- Sam: [Role/Description if available]
+
 ---
 
 [![Kenneth Reitz](https://raw.githubusercontent.com/psf/requests/main/ext/kr.png)](https://kennethreitz.org) [![Python Software Foundation](https://raw.githubusercontent.com/psf/requests/main/ext/psf.png)](https://www.python.org/psf)
