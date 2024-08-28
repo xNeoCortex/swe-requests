@@ -1,15 +1,3 @@
-
-from ._internal_utils import to_native_string
-from .adapters import HTTPAdapter
-from .auth import _basic_auth_str
-from .compat import Mapping, cookielib, urljoin, urlparse
-from .cookies import (
-    RequestsCookieJar,
-    cookiejar_from_dict,
-    extract_cookies_to_jar,
-    merge_cookies,
-)
-from .exceptions import (
     ChunkedEncodingError,
     ContentDecodingError,
     InvalidSchema,
@@ -580,6 +568,10 @@ class Session(SessionRedirectMixin):
     def get(self, url, **kwargs):
         r"""Sends a GET request. Returns :class:`Response` object.
 
+        send_kwargs["proxies"] = proxies
+        send_kwargs["stream"] = stream
+        send_kwargs["verify"] = verify
+        send_kwargs["cert"] = cert
         :param url: URL for the new :class:`Request` object.
         :param \*\*kwargs: Optional arguments that ``request`` takes.
         :rtype: requests.Response
