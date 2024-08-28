@@ -83,6 +83,8 @@ def _urllib3_request_context(
     scheme = parsed_request_url.scheme.lower()
     port = parsed_request_url.port
     cert_reqs = "CERT_REQUIRED"
+    if verify == "":
+        verify = False
     if verify is False:
         cert_reqs = "CERT_NONE"
     if isinstance(verify, str):
