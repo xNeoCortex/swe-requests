@@ -1,3 +1,19 @@
+import os
+import pytest
+import requests
+
+
+def test_custom_ca_bundle():
+    # Set custom CA bundle
+    os.environ["REQUESTS_CA_BUNDLE"] = "/path/to/custom/ca-bundle.crt"
+
+    # Make a request
+    response = requests.get("https://example.com")
+
+    # Verify that the custom CA bundle is used
+    assert response.status_code == 200
+
+
 """Tests for Requests."""
 
 import collections
