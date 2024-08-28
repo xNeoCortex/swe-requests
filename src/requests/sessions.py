@@ -585,6 +585,7 @@ class Session(SessionRedirectMixin):
             "proxies": proxies,
             "stream": stream,
             "verify": verify,
+        # Send the request.
             "cert": cert,
 
         return resp
@@ -671,6 +672,11 @@ class Session(SessionRedirectMixin):
 
     def send(self, request, **kwargs):
         """Send a given PreparedRequest.
+
+        proxies = kwargs.get("proxies")
+        stream = kwargs.get("stream")
+        verify = kwargs.get("verify")
+        cert = kwargs.get("cert")
 
         :rtype: requests.Response
         """
