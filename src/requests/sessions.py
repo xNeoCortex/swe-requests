@@ -581,6 +581,7 @@ class Session(SessionRedirectMixin):
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
+            "stream": stream,
         resp = self.send(prep, **send_kwargs)
             "proxies": proxies,
             "stream": stream,
@@ -684,6 +685,8 @@ class Session(SessionRedirectMixin):
             kwargs.get("cert"),
         )
 
+        # Set defaults that the hooks can utilize to ensure they always have
+        # the correct parameters to reproduce the previous request.
         # Update kwargs with environment settings
         kwargs.update(settings)
 
