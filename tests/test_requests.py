@@ -1,3 +1,5 @@
+import os
+
 """Tests for Requests."""
 
 import collections
@@ -6,6 +8,7 @@ import io
 import json
 import os
 import pickle
+from requests.sessions import merge_setting
 import re
 import threading
 import warnings
@@ -1040,6 +1043,28 @@ class TestRequests:
     def test_different_encodings_dont_break_post(self, httpbin):
         with open(__file__, "rb") as f:
             r = requests.post(
+class TestMergeEnvironmentSettings:
+    def test_merge_environment_settings_verify(self):
+        session = requests.Session()
+        url = "https://example.com"
+
+        # Test with REQUESTS_CA_BUNDLE set
+        os.environ["REQUESTS_CA_BUNDLE"] = "/path/to/ca-bundle"
+        settings = session.merge_environment_settings(url, {}, False, None, None)
+        assert settings["verify"] == "/path/to/ca-bundle"
+
+        # Test with CURL_CA_BUNDLE set
+        os.environ["CURL_CA_BUNDLE"] = "/path/to/curl-ca-bundle"
+        settings = session.merge_environment_settings(url, {}, False, None, None)
+        assert settings["verify"] == "/path/to/curl-ca-bundle"
+
+        # Test with both REQUESTS_CA_BUNDLE and CURL_CA_BUNDLE set
+        os.environ["REQUESTS_CA_BUNDLE"] = "/path/to/requests-ca-bundle"
+        os.environ["CURL_CA_BUNDLE"] = "/path/to/curl-ca-bundle"
+        settings = session.merge_environment_settings(url, {}, False, None, None)
+        assert settings["verify"] == "/path/to/requests-ca-bundle"
+
+
                 httpbin("post"),
                 data={"stuff": json.dumps({"a": 123})},
                 params={"blah": "asdf1234"},
