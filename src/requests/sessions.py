@@ -12,6 +12,7 @@ from collections import OrderedDict
 from datetime import timedelta
 
 from ._internal_utils import to_native_string
+from ._internal_utils import *
 from .adapters import HTTPAdapter
 from .auth import _basic_auth_str
 from .compat import Mapping, cookielib, urljoin, urlparse
