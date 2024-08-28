@@ -1,16 +1,3 @@
-"""
-requests.utils
-~~~~~~~~~~~~~~
-
-This module provides utility functions that are used within Requests
-that are also useful for external consumption.
-"""
-
-import codecs
-import contextlib
-import io
-import os
-import re
 import socket
 import struct
 import sys
