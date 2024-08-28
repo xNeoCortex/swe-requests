@@ -16,7 +16,7 @@ from base64 import b64encode
 from ._internal_utils import to_native_string
 from .compat import basestring, str, urlparse
 from .cookies import extract_cookies_to_jar
-from .utils import parse_dict_header
+from .utils import parse_dict_header, _remove_path_dot_segments
 
 CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded"
 CONTENT_TYPE_MULTI_PART = "multipart/form-data"
@@ -182,7 +182,7 @@ class HTTPDigestAuth(AuthBase):
         entdig = None
         p_parsed = urlparse(url)
         #: path is request-uri defined in RFC 2616 which should not be empty
-        path = p_parsed.path or "/"
+        path = _remove_path_dot_segments(p_parsed.path)
         if p_parsed.query:
             path += f"?{p_parsed.query}"
 
