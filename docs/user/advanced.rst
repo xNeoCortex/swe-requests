@@ -966,6 +966,8 @@ Requests will automatically parse these link headers and make them easily consum
 
 .. _transport-adapters:
 
+------------------
+-----------------
 Transport Adapters
 ------------------
 
@@ -1004,6 +1006,49 @@ Many of the details of implementing a Transport Adapter are beyond the scope of
 this documentation, but take a look at the next example for a simple SSL use-
 case. For more than that, you might look at subclassing the
 :class:`BaseAdapter <requests.adapters.BaseAdapter>`.
+:class:`BaseAdapter <requests.adapters.BaseAdapter>`.
+
+Example: Custom Transport Adapter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following example shows how to create a custom transport adapter that uses
+a specific SSL context. This can be useful when you need to connect to servers
+with old or expired certificates.
+
+.. code-block:: python
+
+    import ssl
+    from urllib3.poolmanager import PoolManager
+    from requests.adapters import HTTPAdapter
+
+    class TruststoreAdapter(HTTPAdapter):
+        """An adapter for requests.  This supplies the a custom ssl_context to a set of requests."""
+
+        custom_context: truststore.SSLContext | ssl.SSLContext = None
+
+        def __init__(
+            self,
+            pool_connections=DEFAULT_POOLSIZE,
+            pool_maxsize=DEFAULT_POOLSIZE,
+            max_retries=DEFAULT_RETRIES,
+            pool_block=DEFAULT_POOLBLOCK,
+            ssl_context: truststore.SSLContext | ssl.SSLContext | None = None,
+        ):
+            self.custom_context = ssl_context
+
+            super().__init__(
+                pool_connections=pool_connections,
+                pool_maxsize=pool_maxsize,
+                max_retries=max_retries,
+                pool_block=pool_block,
+            )
+
+        def init_poolmanager(self, connections, maxsize, block=False):
+            ctx = self.custom_context
+            return super().init_poolmanager(connections, maxsize, block, ssl_context=ctx)
+
+
+::
 
 Example: Specific SSL Version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
