@@ -1031,8 +1031,8 @@ def get_auth_from_url(url):
     return auth
 
 
-def _remove_path_dot_segments(path):
-    """Removes dot segments from a URL path as per RFC 3986 Section 5.2.4."""
+def _normalize_path(path):
+    """Normalize path by removing dot segments and reducing multiple slashes."""
     segments = path.split('/')
     output = []
     for segment in segments:
