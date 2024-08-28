@@ -1,15 +1,3 @@
-
-from ._internal_utils import to_native_string
-from .adapters import HTTPAdapter
-from .auth import _basic_auth_str
-from .compat import Mapping, cookielib, urljoin, urlparse
-from .cookies import (
-    RequestsCookieJar,
-    cookiejar_from_dict,
-    extract_cookies_to_jar,
-    merge_cookies,
-)
-from .exceptions import (
     ChunkedEncodingError,
     ContentDecodingError,
     InvalidSchema,
@@ -580,6 +568,10 @@ class Session(SessionRedirectMixin):
     def get(self, url, **kwargs):
         r"""Sends a GET request. Returns :class:`Response` object.
 
+            "proxies": proxies,
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
         :param url: URL for the new :class:`Request` object.
         :param \*\*kwargs: Optional arguments that ``request`` takes.
         :rtype: requests.Response
@@ -684,6 +676,18 @@ class Session(SessionRedirectMixin):
 
         # It's possible that users might accidentally send a Request object.
         # Guard against that specific failure case.
+        proxies = kwargs.get("proxies")
+        stream = kwargs.get("stream")
+        verify = kwargs.get("verify")
+        cert = kwargs.get("cert")
+
+        settings = self.merge_environment_settings(
+            request.url, proxies, stream, verify, cert
+        )
+
+        # Update kwargs with environment settings
+        kwargs.update(settings)
+
         if isinstance(request, Request):
             raise ValueError("You can only send PreparedRequests.")
 
