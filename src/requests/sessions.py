@@ -581,6 +581,17 @@ class Session(SessionRedirectMixin):
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
+
+        # Set up variables needed for merge_environment_settings.
+        send_kwargs["proxies"] = proxies
+        send_kwargs["stream"] = stream
+        send_kwargs["verify"] = verify
+        send_kwargs["cert"] = cert
+
+        send_kwargs = {
+            "timeout": timeout,
+            "allow_redirects": allow_redirects,
+        }
         resp = self.send(prep, **send_kwargs)
 
         return resp
