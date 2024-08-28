@@ -581,6 +581,9 @@ class Session(SessionRedirectMixin):
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
         resp = self.send(prep, **send_kwargs)
             "proxies": proxies,
             "stream": stream,
@@ -687,7 +690,7 @@ class Session(SessionRedirectMixin):
         # Update kwargs with environment settings
         kwargs.update(settings)
 
-        kwargs.setdefault("stream", self.stream)
+            cert=kwargs.get("cert")
         kwargs.setdefault("verify", self.verify)
         kwargs.setdefault("cert", self.cert)
         if "proxies" not in kwargs:
