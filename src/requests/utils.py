@@ -1038,6 +1038,9 @@ def _remove_path_dot_segments(path):
     for segment in segments:
         if segment == '..':
             if output:
+                if output[-1] == '..':
+                    output.append('..')
+                else:
                 output.pop()
         elif segment != '.':
             output.append(segment)
