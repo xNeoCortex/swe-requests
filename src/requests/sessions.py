@@ -581,6 +581,14 @@ class Session(SessionRedirectMixin):
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
+        send_kwargs = {
+            "timeout": timeout,
+            "allow_redirects": allow_redirects,
+            "proxies": proxies,
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
+        }
         resp = self.send(prep, **send_kwargs)
 
         return resp
