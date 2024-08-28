@@ -583,9 +583,6 @@ class Session(SessionRedirectMixin):
         }
         resp = self.send(prep, **send_kwargs)
             "proxies": proxies,
-            "stream": stream,
-            "verify": verify,
-            "cert": cert,
 
         return resp
 
