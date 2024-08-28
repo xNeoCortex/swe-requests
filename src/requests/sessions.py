@@ -1,15 +1,3 @@
-
-from ._internal_utils import to_native_string
-from .adapters import HTTPAdapter
-from .auth import _basic_auth_str
-from .compat import Mapping, cookielib, urljoin, urlparse
-from .cookies import (
-    RequestsCookieJar,
-    cookiejar_from_dict,
-    extract_cookies_to_jar,
-    merge_cookies,
-)
-from .exceptions import (
     ChunkedEncodingError,
     ContentDecodingError,
     InvalidSchema,
@@ -568,6 +556,10 @@ class Session(SessionRedirectMixin):
         send_kwargs = {
             "timeout": timeout,
             "allow_redirects": allow_redirects,
+            "proxies": proxies,
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
         send_kwargs["proxies"] = proxies
         send_kwargs["stream"] = stream
         send_kwargs["verify"] = verify
