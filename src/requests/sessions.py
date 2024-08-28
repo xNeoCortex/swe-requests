@@ -589,6 +589,14 @@ class Session(SessionRedirectMixin):
             "verify": verify,
             "cert": cert,
         }
+        send_kwargs = {
+            "timeout": timeout,
+            "allow_redirects": allow_redirects,
+            "proxies": proxies,
+            "stream": stream,
+            "verify": verify,
+            "cert": cert,
+        }
         resp = self.send(prep, **send_kwargs)
 
         return resp
@@ -672,6 +680,18 @@ class Session(SessionRedirectMixin):
         """
 
         return self.request("DELETE", url, **kwargs)
+        proxies = kwargs.get("proxies")
+        stream = kwargs.get("stream")
+        verify = kwargs.get("verify")
+        cert = kwargs.get("cert")
+
+        settings = self.merge_environment_settings(
+            request.url, proxies, stream, verify, cert
+        )
+
+        # Update kwargs with environment settings
+        kwargs.update(settings)
+
 
     def send(self, request, **kwargs):
         """Send a given PreparedRequest.
