@@ -1,3 +1,5 @@
+import pytest
+
 """Tests for Requests."""
 
 import collections
@@ -12,6 +14,14 @@ import warnings
 from unittest import mock
 
 import pytest
+def test_digestauth_double_slash():
+    """Ensure we handle URLs with double slashes correctly."""
+    url = "http://httpbin.org//digest-auth/auth/user/pass"
+    auth = HTTPDigestAuth("user", "pass")
+    r = requests.get(url, auth=auth)
+    assert r.status_code == 200
+    assert r.request.headers["Authorization"].startswith("Digest ")
+
 import urllib3
 from urllib3.util import Timeout as Urllib3Timeout
 
