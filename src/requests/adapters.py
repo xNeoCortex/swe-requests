@@ -76,11 +76,10 @@ DEFAULT_POOL_TIMEOUT = None
 
 try:
     import ssl  # noqa: F401
+    from .utils import get_ssl_context
 
     _preloaded_ssl_context = create_urllib3_context()
-    _preloaded_ssl_context.load_verify_locations(
-        extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)
-    )
+    get_ssl_context(_preloaded_ssl_context)
 except ImportError:
     # Bypass default SSLContext creation when Python
     # interpreter isn't built with the ssl module.
