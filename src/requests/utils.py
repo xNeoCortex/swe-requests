@@ -18,8 +18,9 @@ import tempfile
 import warnings
 import zipfile
 from collections import OrderedDict
+from typing import Optional
 
-from urllib3.util import make_headers, parse_url
+from urllib3.util import make_headers, parse_url, create_urllib3_context
 
 from . import certs
 from .__version__ import __version__
@@ -62,10 +63,12 @@ from .structures import CaseInsensitiveDict
 NETRC_FILES = (".netrc", "_netrc")
 
 DEFAULT_CA_BUNDLE_PATH = certs.where()
-
+DEFAULT_CA_BUNDLE_PATH = certs.where()
 DEFAULT_PORTS = {"http": 80, "https": 443}
 
 # Ensure that ', ' is used to preserve previous delimiter behavior.
+_SSL_CONTEXT: Optional["ssl.SSLContext"] = None
+
 DEFAULT_ACCEPT_ENCODING = ", ".join(
     re.split(r",\s*", make_headers(accept_encoding=True)["accept-encoding"])
 )
@@ -122,6 +125,44 @@ if sys.platform == "win32":
             return proxy_bypass_environment(host)
         else:
             return proxy_bypass_registry(host)
+
+
+def get_ssl_context() -> "ssl.SSLContext | None":
+    """
+    Returns a custom ``SSLContext`` for Requests.
+
+    This function should only be called once per interpreter instance because it can be expensive to call.
+
+    :rtype: ssl.SSLContext | None
+    :returns: The custom ``SSLContext`` for Requests if one could be created, otherwise ``None``.
+    """
+    global _SSL_CONTEXT
+
+    if _SSL_CONTEXT is not None:
+        return _SSL_CONTEXT
+
+    try:
+        # Import ssl here so if it fails we only error on first use of SSLContext creation.
+        # This allows users to disable SSL verification without third-party dependencies by setting verify=False.
+        from urllib3.util.ssl_ import create_urllib3_context  # type: ignore[import]
+
+        _SSL_CONTEXT = create_urllib3_context()
+
+        # In some cases, the user may have already loaded a custom CA bundle path into their default SSL context.
+        # If this is true we want to skip over our default CA load because it may produce a warning or error.
+        context_has_custom_ca_path = (
+            DEFAULT_CA_BUNDLE_PATH not in _SSL_CONTEXT.get_ca_certs([])  # type: ignore[attr-defined]
+        )
+
+        if not context_has_custom_ca_path:
+            _SSL_CONTEXT.load_verify_locations(
+                extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)
+            )
+
+    except ImportError:
+        pass
+
+    return _SSL_CONTEXT
 
 
 def dict_to_sequence(d):

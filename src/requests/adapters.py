@@ -1,16 +1,3 @@
-"""
-requests.adapters
-~~~~~~~~~~~~~~~~~
-
-This module contains the transport adapters that Requests uses to define
-and maintain connections.
-"""
-
-import os.path
-import socket  # noqa: F401
-import typing
-import warnings
-
 from urllib3.exceptions import ClosedPoolError, ConnectTimeoutError
 from urllib3.exceptions import HTTPError as _HTTPError
 from urllib3.exceptions import InvalidHeader as _InvalidHeader
@@ -27,7 +14,6 @@ from urllib3.poolmanager import PoolManager, proxy_from_url
 from urllib3.util import Timeout as TimeoutSauce
 from urllib3.util import parse_url
 from urllib3.util.retry import Retry
-from urllib3.util.ssl_ import create_urllib3_context
 
 from .auth import _basic_auth_str
 from .compat import basestring, urlparse
@@ -47,10 +33,10 @@ from .exceptions import (
 from .models import Response
 from .structures import CaseInsensitiveDict
 from .utils import (
-    DEFAULT_CA_BUNDLE_PATH,
     extract_zipped_paths,
     get_auth_from_url,
     get_encoding_from_headers,
+    get_ssl_context,
     prepend_scheme_if_needed,
     select_proxy,
     urldefragauth,
@@ -117,14 +103,14 @@ def _urllib3_request_context(
             pool_kwargs["ca_certs"] = verify
         else:
             pool_kwargs["ca_cert_dir"] = verify
-    pool_kwargs["cert_reqs"] = cert_reqs
+        not has_poolmanager_ssl_context
     if client_cert is not None:
         if isinstance(client_cert, tuple) and len(client_cert) == 2:
             pool_kwargs["cert_file"] = client_cert[0]
             pool_kwargs["key_file"] = client_cert[1]
         else:
             # According to our docs, we allow users to specify just the client
-            # cert path
+        pool_kwargs["ssl_context"] = get_ssl_context()
             pool_kwargs["cert_file"] = client_cert
     host_params = {
         "scheme": scheme,
