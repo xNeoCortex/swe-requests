@@ -77,17 +77,29 @@ DEFAULT_POOL_TIMEOUT = None
 try:
     import ssl  # noqa: F401
 
-    _preloaded_ssl_context = create_urllib3_context()
-    _preloaded_ssl_context.load_verify_locations(
-        extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)
-    )
-except ImportError:
     # Bypass default SSLContext creation when Python
     # interpreter isn't built with the ssl module.
     _preloaded_ssl_context = None
 
 
 def _urllib3_request_context(
+def _get_preloaded_ssl_context():
+    global _preloaded_ssl_context
+    if _preloaded_ssl_context is None:
+        return None
+
+    context = _preloaded_ssl_context
+    if not getattr(context, "requests_unverified", False):
+        context = create_urllib3_context()
+        context.load_verify_locations(extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH))
+
+        # We only want to do this once per instance of _preloaded_ssl_context
+        # so we set an attribute on it and use it as a flag to indicate we have done our work.
+        setattr(_preloaded_ssl_context, "requests_unverified", True)
+
+    return context
+
+
     request: "PreparedRequest",
     verify: "bool | str | None",
     client_cert: "typing.Tuple[str, str] | str | None",
@@ -104,14 +116,14 @@ def _urllib3_request_context(
     poolmanager_kwargs = getattr(poolmanager, "connection_pool_kw", {})
     has_poolmanager_ssl_context = poolmanager_kwargs.get("ssl_context")
     should_use_default_ssl_context = (
-        _preloaded_ssl_context is not None and not has_poolmanager_ssl_context
+        not has_poolmanager_ssl_context and verify is True
     )
 
     cert_reqs = "CERT_REQUIRED"
     if verify is False:
         cert_reqs = "CERT_NONE"
     elif verify is True and should_use_default_ssl_context:
-        pool_kwargs["ssl_context"] = _preloaded_ssl_context
+        pool_kwargs["ssl_context"] = _get_preloaded_ssl_context()
     elif isinstance(verify, str):
         if not os.path.isdir(verify):
             pool_kwargs["ca_certs"] = verify
