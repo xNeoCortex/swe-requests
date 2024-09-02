@@ -77,15 +77,19 @@ DEFAULT_POOL_TIMEOUT = None
 try:
     import ssl  # noqa: F401
 
-    _preloaded_ssl_context = create_urllib3_context()
-    _preloaded_ssl_context.load_verify_locations(
-        extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)
-    )
-except ImportError:
     # Bypass default SSLContext creation when Python
     # interpreter isn't built with the ssl module.
     _preloaded_ssl_context = None
 
+
+def _get_preloaded_ssl_context():
+    global _preloaded_ssl_context
+    if _preloaded_ssl_context is None:
+        _preloaded_ssl_context = create_urllib3_context()
+        _preloaded_ssl_context.load_verify_locations(
+            extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)
+        )
+    return _preloaded_ssl_context
 
 def _urllib3_request_context(
     request: "PreparedRequest",
@@ -104,7 +108,7 @@ def _urllib3_request_context(
     poolmanager_kwargs = getattr(poolmanager, "connection_pool_kw", {})
     has_poolmanager_ssl_context = poolmanager_kwargs.get("ssl_context")
     should_use_default_ssl_context = (
-        _preloaded_ssl_context is not None and not has_poolmanager_ssl_context
+        _get_preloaded_ssl_context() is not None and not has_poolmanager_ssl_context
     )
 
     cert_reqs = "CERT_REQUIRED"
