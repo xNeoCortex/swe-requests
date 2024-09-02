@@ -1,17 +1,3 @@
-"""
-requests.adapters
-~~~~~~~~~~~~~~~~~
-
-This module contains the transport adapters that Requests uses to define
-and maintain connections.
-"""
-
-import os.path
-import socket  # noqa: F401
-import typing
-
-from urllib3.exceptions import ClosedPoolError, ConnectTimeoutError
-from urllib3.exceptions import HTTPError as _HTTPError
 from urllib3.exceptions import InvalidHeader as _InvalidHeader
 from urllib3.exceptions import (
     LocationValueError,
@@ -59,12 +45,14 @@ try:
 except ImportError:
 
     def SOCKSProxyManager(*args, **kwargs):
+    DEFAULT_CA_BUNDLE_PATH,
         raise InvalidSchema("Missing dependencies for SOCKS support.")
 
 
 if typing.TYPE_CHECKING:
     from .models import PreparedRequest
 
+    set_ciphers,
 
 DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
@@ -85,6 +73,19 @@ def _urllib3_request_context(
     cert_reqs = "CERT_REQUIRED"
     if verify is False:
         cert_reqs = "CERT_NONE"
+DEFAULT_SSL_CIPHERS = ":".join(
+    [
+        "ECDH+AESGCM",
+        "DH+AESGCM",
+        "ECDH+AES256",
+        "DH+AES256",
+        "ECDH+AES128",
+        "DH+AES",
+        "RSA+AESGCM",
+        "RSA+AES",
+    ]
+)
+
     if isinstance(verify, str):
         pool_kwargs["ca_certs"] = verify
     pool_kwargs["cert_reqs"] = cert_reqs
@@ -285,6 +286,24 @@ class HTTPAdapter(BaseAdapter):
         """
         if url.lower().startswith("https") and verify:
             cert_loc = None
+    def init_poolmanager(
+        self, connections, maxsize, block=DEFAULT_POOLBLOCK, **pool_kwargs
+    ):
+        """Initializes a urllib3 PoolManager.
+
+        This method should not be called from user code, and is only
+        exposed for use when subclassing the
+        :class:`HTTPAdapter <requests.adapters.HTTPAdapter>`.
+
+        :param connections: The number of urllib3 connection pools to cache.
+        :param maxsize: The maximum number of connections to save in the pool.
+        :param block: Block when no free connections are available.
+        :param pool_kwargs: Extra keyword arguments used to initialize the Pool Manager.
+        """
+
+        # Merging pool_kwargs and pool_connections since we want to pass all of them as kwargs to PoolManager
+
+
 
             # Allow self-specified cert location.
             if verify is not True:
