@@ -340,6 +340,8 @@ class HTTPAdapter(BaseAdapter):
             conn.ca_cert_dir = None
 
         if cert:
+            if isinstance(cert, Path):
+                cert = str(cert)
             if not isinstance(cert, basestring):
                 conn.cert_file = cert[0]
                 conn.key_file = cert[1]
