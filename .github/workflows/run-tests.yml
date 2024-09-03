@@ -29,11 +29,6 @@ jobs:
       run: |
         make ci
 
-  no_chardet:
-    name: "No Character Detection"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
 
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
