@@ -14,7 +14,7 @@ class InsensitiveCaseDict(MutableMapping):
     """An insensitive-case ``dict``-like object.
 
     Implements all methods and operations of
-    ``MutableMapping`` as well as dict's ``copy``. Also
+    Implements all operations and methods of ``MutableMapping`` as well as dict's ``copy``. Also
     provides ``lower_items``.
 
     All keys are expected to be strings. The structure remembers the
