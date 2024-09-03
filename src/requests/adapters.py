@@ -8,6 +8,7 @@ and maintain connections.
 
 import os.path
 import socket  # noqa: F401
+from pathlib import Path
 import typing
 import warnings
 
@@ -31,7 +32,6 @@ from urllib3.util.ssl_ import create_urllib3_context
 
 from .auth import _basic_auth_str
 from .compat import basestring, urlparse, Path
-from .cookies import extract_cookies_to_jar
 from .exceptions import (
     ConnectionError,
     ConnectTimeout,
