@@ -7,20 +7,16 @@ permissions:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     strategy:
       fail-fast: false
-      matrix:
-        python-version: ["3.11"]
-        os: [ubuntu-22.04]
-
     steps:
     - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python ubuntu-22.04
       uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.8'
         cache: 'pip'
     - name: Install dependencies
       run: |
