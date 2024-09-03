@@ -10,7 +10,7 @@ from collections import OrderedDict
 from .compat import Mapping, MutableMapping
 
 
-class CaseInsensitiveDict(MutableMapping):
+class InsensitiveCaseDict(MutableMapping):
     """A case-insensitive ``dict``-like object.
 
     Implements all methods and operations of
@@ -66,7 +66,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __eq__(self, other):
         if isinstance(other, Mapping):
-            other = CaseInsensitiveDict(other)
+            other = InsensitiveCaseDict(other)
         else:
             return NotImplemented
         # Compare insensitively
@@ -74,7 +74,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     # Copy is required
     def copy(self):
-        return CaseInsensitiveDict(self._store.values())
+        return InsensitiveCaseDict(self._store.values())
 
     def __repr__(self):
         return str(dict(self.items()))
