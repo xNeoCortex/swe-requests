@@ -30,7 +30,7 @@ from urllib3.util.retry import Retry
 from urllib3.util.ssl_ import create_urllib3_context
 
 from .auth import _basic_auth_str
-from .compat import basestring, urlparse
+from .compat import basestring, urlparse, Path
 from .cookies import extract_cookies_to_jar
 from .exceptions import (
     ConnectionError,
@@ -54,6 +54,7 @@ from .utils import (
     prepend_scheme_if_needed,
     select_proxy,
     urldefragauth,
+    path_to_str,
 )
 
 try:
@@ -338,6 +339,9 @@ class HTTPAdapter(BaseAdapter):
             conn.cert_reqs = "CERT_NONE"
             conn.ca_certs = None
             conn.ca_cert_dir = None
+
+        # If cert is a pathlib.Path object, convert it to a string
+        cert = path_to_str(cert)
 
         if cert:
             if not isinstance(cert, basestring):

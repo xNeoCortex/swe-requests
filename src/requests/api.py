@@ -8,7 +8,7 @@ This module implements the Requests API.
 :license: Apache2, see LICENSE for more details.
 """
 
-from . import sessions
+from . import sessions, utils
 
 
 def request(method, url, **kwargs):
@@ -56,6 +56,11 @@ def request(method, url, **kwargs):
     # avoid leaving sockets open which can trigger a ResourceWarning in some
     # cases, and look like a memory leak in others.
     with sessions.Session() as session:
+        # If cert is given and is a pathlib.Path object, convert it to a string
+        cert = kwargs.get("cert")
+        if cert:
+            kwargs["cert"] = utils.path_to_str(cert)
+
         return session.request(method=method, url=url, **kwargs)
 
 

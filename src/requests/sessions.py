@@ -49,6 +49,7 @@ from .utils import (  # noqa: F401
     rewind_body,
     should_bypass_proxies,
     to_key_val_list,
+    path_to_str,
 )
 
 # Preferred clock, based on which one is more accurate on a given system.
@@ -572,6 +573,10 @@ class Session(SessionRedirectMixin):
             cookies=cookies,
             hooks=hooks,
         )
+
+        # If cert is given and is a pathlib.Path object, convert it to a string
+        if isinstance(cert, Path):
+            cert = path_to_str(cert)
         prep = self.prepare_request(req)
 
         proxies = proxies or {}
