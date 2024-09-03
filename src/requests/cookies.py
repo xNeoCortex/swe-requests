@@ -432,6 +432,24 @@ class RequestsCookieJar(cookielib.CookieJar, MutableMapping):
         new_cj.update(self)
         return new_cj
 
+    def popitem(self):
+        """Dict-like popitem() for compatibility with client code. Removes and
+        returns some (key, value) pair as a 2-tuple; but raises KeyError if D
+        is empty.
+
+        .. warning:: operation is O(n), not O(1).
+        """
+        for cookie in iter(self):
+            try:
+                # remove it first
+                self.__delitem__(cookie.name)
+                # then return it
+                return cookie.name, cookie.value
+            except KeyError:
+                continue
+
+        raise KeyError("dictionary is empty")
+
     def get_policy(self):
         """Return the CookiePolicy instance used."""
         return self._policy
