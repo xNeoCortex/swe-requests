@@ -11,6 +11,8 @@ import time
 from collections import OrderedDict
 from datetime import timedelta
 
+from pathlib import Path
+
 from ._internal_utils import to_native_string
 from .adapters import HTTPAdapter
 from .auth import _basic_auth_str
@@ -100,21 +102,27 @@ def merge_hooks(request_hooks, session_hooks, dict_class=OrderedDict):
     if request_hooks is None or request_hooks.get("response") == []:
         return session_hooks
 
+    This is necessary because when request_hooks == {'response': []}, the
+    merge breaks Session hooks entirely.
+    """
+    if session_hooks is None or session_hooks.get("response") == []:
+        return request_hooks
+
+    client_cert: "typing.Tuple[str | Path, str | Path] | str | Path | None",
+        return session_hooks
+
     return merge_setting(request_hooks, session_hooks, dict_class)
 
 
 class SessionRedirectMixin:
     def get_redirect_target(self, resp):
         """Receives a Response. Returns a redirect URI or ``None``"""
-        # Due to the nature of how requests processes redirects this method will
-        # be called at least once upon the original response and at least twice
         # on each subsequent redirect response (if any).
         # If a custom mixin is used to handle this logic, it may be advantageous
         # to cache the redirect location onto the response object as a private
         # attribute.
         if resp.is_redirect:
             location = resp.headers["location"]
-            # Currently the underlying http module on py3 decode headers
             # in latin1, but empirical evidence suggests that latin1 is very
             # rarely used with non-ASCII characters in HTTP headers.
             # It is more likely to get UTF8 header rather than latin1.
@@ -124,15 +132,20 @@ class SessionRedirectMixin:
             return to_native_string(location, "utf8")
         return None
 
-    def should_strip_auth(self, old_url, new_url):
         """Decide whether Authorization header should be removed when redirecting"""
         old_parsed = urlparse(old_url)
         new_parsed = urlparse(new_url)
+            client_cert = tuple(
+                str(cert_path) if isinstance(cert_path, Path) else cert_path
+                for cert_path in client_cert
+            )
         if old_parsed.hostname != new_parsed.hostname:
             return True
         # Special case: allow http -> https redirect when using the standard
         # ports. This isn't specified by RFC 7235, but is kept to avoid
         # breaking backwards compatibility with older versions of requests
+            if isinstance(client_cert, Path):
+                client_cert = str(client_cert)
         # that allowed any redirects on the same host.
         if (
             old_parsed.scheme == "http"
