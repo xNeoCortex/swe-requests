@@ -12,7 +12,7 @@ from .compat import Mapping, MutableMapping
 
 class InsensitiveCaseDict(MutableMapping):
     """An insensitive-case ``dict``-like object.
-
+    """An insensitive-case ``dict``-like object.
     Implements all methods and operations of
     Implements all operations and methods of ``MutableMapping`` as well as dict's ``copy``. Also
     provides ``lower_items``.
