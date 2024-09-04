@@ -10,6 +10,7 @@ import os.path
 import socket  # noqa: F401
 import typing
 import warnings
+from pathlib import Path
 
 from urllib3.exceptions import ClosedPoolError, ConnectTimeoutError
 from urllib3.exceptions import HTTPError as _HTTPError
@@ -90,7 +91,7 @@ except ImportError:
 def _urllib3_request_context(
     request: "PreparedRequest",
     verify: "bool | str | None",
-    client_cert: "typing.Tuple[str, str] | str | None",
+    client_cert: "typing.Tuple[str | Path, str | Path] | str | Path | None",
     poolmanager: "PoolManager",
 ) -> "(typing.Dict[str, typing.Any], typing.Dict[str, typing.Any])":
     host_params = {}
@@ -119,7 +120,10 @@ def _urllib3_request_context(
             pool_kwargs["ca_cert_dir"] = verify
     pool_kwargs["cert_reqs"] = cert_reqs
     if client_cert is not None:
+        if isinstance(client_cert, Path):
+            client_cert = str(client_cert)
         if isinstance(client_cert, tuple) and len(client_cert) == 2:
+            client_cert = (str(client_cert[0]), str(client_cert[1]))
             pool_kwargs["cert_file"] = client_cert[0]
             pool_kwargs["key_file"] = client_cert[1]
         else:
@@ -301,7 +305,13 @@ class HTTPAdapter(BaseAdapter):
 
         return manager
 
-    def cert_verify(self, conn, url, verify, cert):
+    def cert_verify(
+        self,
+        conn,
+        url,
+        verify,
+        cert: "typing.Tuple[str | Path, str | Path] | str | Path | None",
+    ):
         """Verify a SSL certificate. This method should not be called from user
         code, and is only exposed for use when subclassing the
         :class:`HTTPAdapter <requests.adapters.HTTPAdapter>`.
