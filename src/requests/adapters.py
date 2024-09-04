@@ -85,6 +85,9 @@ except ImportError:
     # Bypass default SSLContext creation when Python
     # interpreter isn't built with the ssl module.
     _preloaded_ssl_context = None
+except FileNotFoundError:
+    # Bypass default SSLContext creation when no CA bundle is present in install.
+    _preloaded_ssl_context = None
 
 
 def _urllib3_request_context(
