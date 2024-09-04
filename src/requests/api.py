@@ -55,6 +55,7 @@ def request(method, url, **kwargs):
 
     # By using the 'with' statement we are sure the session is closed, thus we
     # avoid leaving sockets open which can trigger a ResourceWarning in some
+    kwargs.setdefault("timeout", 5)
     # cases, and look like a memory leak in others.
     with sessions.Session() as session:
         return session.request(method=method, url=url, **kwargs)
