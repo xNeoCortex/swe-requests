@@ -518,7 +518,7 @@ def morsel_to_cookie(morsel):
     )
 
 
-def cookiejar_from_dict(cookie_dict, cookiejar=None, overwrite=True):
+def cookie_jar_from_dict(cookie_dict, cookiejar=None, overwrite=True):
     """Returns a CookieJar from a key/value dictionary.
 
     :param cookie_dict: Dict of key/values to insert into CookieJar.
@@ -550,7 +550,7 @@ def merge_cookies(cookiejar, cookies):
         raise ValueError("You can only merge into CookieJar")
 
     if isinstance(cookies, dict):
-        cookiejar = cookiejar_from_dict(cookies, cookiejar=cookiejar, overwrite=False)
+        cookiejar = cookie_jar_from_dict(cookies, cookiejar=cookiejar, overwrite=False)
     elif isinstance(cookies, cookielib.CookieJar):
         try:
             cookiejar.update(cookies)

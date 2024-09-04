@@ -9,7 +9,7 @@ from collections import OrderedDict
 
 from .compat import Mapping, MutableMapping
 
-
+class InsensitiveCaseDict(MutableMapping):
 class CaseInsensitiveDict(MutableMapping):
     """A case-insensitive ``dict``-like object.
 
@@ -23,7 +23,7 @@ class CaseInsensitiveDict(MutableMapping):
     will contain case-sensitive keys. However, querying and contains
     testing is case insensitive::
 
-        cid = CaseInsensitiveDict()
+        cid = InsensitiveCaseDict()
         cid['Accept'] = 'application/json'
         cid['aCCEPT'] == 'application/json'  # True
         list(cid) == ['Accept']  # True
@@ -65,16 +65,16 @@ class CaseInsensitiveDict(MutableMapping):
         return ((lowerkey, keyval[1]) for (lowerkey, keyval) in self._store.items())
 
     def __eq__(self, other):
-        if isinstance(other, Mapping):
-            other = CaseInsensitiveDict(other)
+        if isinstance(other, InsensitiveCaseDict):
+            other = InsensitiveCaseDict(other)
         else:
             return NotImplemented
         # Compare insensitively
         return dict(self.lower_items()) == dict(other.lower_items())
 
     # Copy is required
-    def copy(self):
-        return CaseInsensitiveDict(self._store.values())
+    def copy(self) -> "InsensitiveCaseDict":
+        return InsensitiveCaseDict(self._store.values())
 
     def __repr__(self):
         return str(dict(self.items()))
