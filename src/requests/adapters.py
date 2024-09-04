@@ -87,6 +87,18 @@ except ImportError:
     _preloaded_ssl_context = None
 
 
+def _error_message_with_proxy(
+    error_message: str, request: "PreparedRequest", conn: "HTTPConnectionPool"
+) -> str:
+    """Append information about proxy configuration to an error message."""
+    if request.proxy is not None:
+        return (
+            f"{error_message} with proxy {request.proxy}. "
+            f"Do you need to configure HTTP_PROXY or HTTPS_PROXY?"
+        )
+    return f"{error_message}."
+
+
 def _urllib3_request_context(
     request: "PreparedRequest",
     verify: "bool | str | None",
@@ -679,7 +691,11 @@ class HTTPAdapter(BaseAdapter):
             )
 
         except (ProtocolError, OSError) as err:
-            raise ConnectionError(err, request=request)
+            raise ConnectionError(
+                _error_message_with_proxy("Failed to establish a new connection", request, conn),
+                err,
+                request=request,
+            )
 
         except MaxRetryError as e:
             if isinstance(e.reason, ConnectTimeoutError):
@@ -697,7 +713,11 @@ class HTTPAdapter(BaseAdapter):
                 # This branch is for urllib3 v1.22 and later.
                 raise SSLError(e, request=request)
 
-            raise ConnectionError(e, request=request)
+            raise ConnectionError(
+                _error_message_with_proxy("Failed to establish a new connection", request, conn),
+                e,
+                request=request,
+            )
 
         except ClosedPoolError as e:
             raise ConnectionError(e, request=request)
