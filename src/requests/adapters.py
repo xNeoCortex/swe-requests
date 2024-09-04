@@ -28,6 +28,7 @@ from urllib3.util import Timeout as TimeoutSauce
 from urllib3.util import parse_url
 from urllib3.util.retry import Retry
 from urllib3.util.ssl_ import create_urllib3_context
+from pathlib import Path
 
 from .auth import _basic_auth_str
 from .compat import basestring, urlparse
@@ -47,6 +48,7 @@ from .exceptions import (
 from .models import Response
 from .structures import CaseInsensitiveDict
 from .utils import (
+    to_native_string,
     DEFAULT_CA_BUNDLE_PATH,
     extract_zipped_paths,
     get_auth_from_url,
@@ -119,6 +121,8 @@ def _urllib3_request_context(
             pool_kwargs["ca_cert_dir"] = verify
     pool_kwargs["cert_reqs"] = cert_reqs
     if client_cert is not None:
+        if isinstance(client_cert, Path):
+            client_cert = str(client_cert)
         if isinstance(client_cert, tuple) and len(client_cert) == 2:
             pool_kwargs["cert_file"] = client_cert[0]
             pool_kwargs["key_file"] = client_cert[1]
@@ -340,23 +344,34 @@ class HTTPAdapter(BaseAdapter):
             conn.ca_cert_dir = None
 
         if cert:
+    else:
+        conn.cert_reqs = "CERT_NONE"
+        conn.ca_certs = None
+        conn.ca_cert_dir = None
             if not isinstance(cert, basestring):
-                conn.cert_file = cert[0]
-                conn.key_file = cert[1]
-            else:
-                conn.cert_file = cert
-                conn.key_file = None
-            if conn.cert_file and not os.path.exists(conn.cert_file):
-                raise OSError(
-                    f"Could not find the TLS certificate file, "
-                    f"invalid path: {conn.cert_file}"
-                )
-            if conn.key_file and not os.path.exists(conn.key_file):
-                raise OSError(
-                    f"Could not find the TLS key file, invalid path: {conn.key_file}"
-                )
+    if cert:
+        if isinstance(cert, Path):
+            cert = str(cert)
+        elif not isinstance(cert, basestring):
+            cert = (to_native_string(cert[0]), to_native_string(cert[1]))
 
-    def build_response(self, req, resp):
+        if not isinstance(cert, basestring):
+            conn.cert_file = cert[0]
+            conn.key_file = cert[1]
+        else:
+            conn.cert_file = cert
+            conn.key_file = None
+
+        if conn.cert_file and not os.path.exists(conn.cert_file):
+            raise OSError(
+                f"Could not find the TLS certificate file, "
+                f"invalid path: {conn.cert_file}"
+            )
+
+        if conn.key_file and not os.path.exists(conn.key_file):
+            raise OSError(
+                f"Could not find the TLS key file, invalid path: {conn.key_file}"
+            )
         """Builds a :class:`Response <requests.Response>` object from a urllib3
         response. This should not be called from user code, and is only exposed
         for use when subclassing the

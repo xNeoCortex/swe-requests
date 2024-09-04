@@ -49,6 +49,7 @@ from .utils import (  # noqa: F401
     rewind_body,
     should_bypass_proxies,
     to_key_val_list,
+    to_native_string,
 )
 
 # Preferred clock, based on which one is more accurate on a given system.
