@@ -1,4 +1,23 @@
 """Tests for Requests."""
+import os
+import unittest
+from unittest.mock import patch
+import requests
+
+
+class TestRequests(unittest.TestCase):
+    @patch("requests.adapters.DEFAULT_CA_BUNDLE_PATH", "/non/existent/path")
+    def test_verify_false_with_missing_ca_bundle(self):
+        # Ensure that setting verify=False does not raise FileNotFoundError
+        try:
+            response = requests.get("http://127.0.0.1", verify=False)
+            self.assertEqual(response.status_code, 200)
+        except FileNotFoundError:
+            self.fail("FileNotFoundError was raised even though verify=False")
+
+
+if __name__ == "__main__":
+    unittest.main()
 
 import collections
 import contextlib
