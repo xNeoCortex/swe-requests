@@ -1,3 +1,18 @@
+import unittest
+from unittest.mock import patch
+import os
+
+class TestRequests(unittest.TestCase):
+    @patch('requests.adapters.DEFAULT_CA_BUNDLE_PATH', '/non/existent/path')
+    def test_file_not_found_error_handling(self):
+        try:
+            import requests
+        except FileNotFoundError:
+            self.fail("FileNotFoundError was not handled properly")
+
+if __name__ == '__main__':
+    unittest.main()
+
 """Tests for Requests."""
 
 import collections
