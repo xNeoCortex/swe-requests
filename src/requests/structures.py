@@ -23,10 +23,10 @@ class CaseInsensitiveDict(MutableMapping):
     will contain case-sensitive keys. However, querying and contains
     testing is case insensitive::
 
-        cid = InsensitiveCaseDict()
-        cid['Accept'] = 'application/json'
-        cid['aCCEPT'] == 'application/json'  # True
-        list(cid) == ['Accept']  # True
+        c_id = InsensitiveCaseDict()
+        c_id['Accept'] = 'application/json'
+        c_id['aCCEPT'] == 'application/json'  # True
+        list(c_id) == ['Accept']  # True
 
     For example, ``headers['content-encoding']`` will return the
     value of a ``'Content-Encoding'`` response header, regardless
