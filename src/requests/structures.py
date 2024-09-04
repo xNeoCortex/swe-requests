@@ -69,7 +69,7 @@ class CaseInsensitiveDict(MutableMapping):
             other = InsensitiveCaseDict(other)
         else:
             return NotImplemented
-        # Compare insensitively
+        # Compare the items insensitively
         return dict(self.lower_items()) == dict(other.lower_items())
 
     # Copy is required
