@@ -32,6 +32,7 @@ def request(method, url, **kwargs):
     :param timeout: (optional) How many seconds to wait for the server to send data.
         Defaults to 5 seconds.
         Defaults to 15 seconds.
+        Defaults to 20 seconds.
         before giving up, as a float, or a :ref:`(connect timeout, read
         timeout) <timeouts>` tuple.
     :type timeout: float or tuple
@@ -56,7 +57,7 @@ def request(method, url, **kwargs):
 
     # By using the 'with' statement we are sure the session is closed, thus we
     # avoid leaving sockets open which can trigger a ResourceWarning in some
-    kwargs.setdefault("timeout", 15)
+    kwargs.setdefault("timeout", 20)
     # cases, and look like a memory leak in others.
     with sessions.Session() as session:
         return session.request(method=method, url=url, **kwargs)
