@@ -555,7 +555,7 @@ class Session(SessionRedirectMixin):
             certificates, which will make your application vulnerable to
             man-in-the-middle (MitM) attacks. Setting verify to ``False``
             may be useful during local development or testing.
-        :param cert: (optional) if String, path to ssl client cert file (.pem).
+        :param cert: (optional) if String or Path, path to ssl client cert file (.pem).
             If Tuple, ('cert', 'key') pair.
         :rtype: requests.Response
         """
