@@ -671,7 +671,7 @@ class HTTPAdapter(BaseAdapter):
                 headers=request.headers,
                 redirect=False,
                 assert_same_host=False,
-                preload_content=not stream,
+                preload_content=False,
                 decode_content=False,
                 retries=self.max_retries,
                 timeout=timeout,
