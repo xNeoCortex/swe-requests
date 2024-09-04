@@ -287,6 +287,7 @@ class HTTPAdapter(BaseAdapter):
                 maxsize=self._pool_maxsize,
                 block=self._pool_block,
                 **proxy_kwargs,
+                **proxy_kwargs,
             )
         else:
             proxy_headers = self.proxy_headers(proxy)
