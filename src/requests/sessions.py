@@ -437,7 +437,7 @@ class Session(SessionRedirectMixin):
         #: Default timeout for all requests made by this Session. If None is passed
         #: to any request method, this value will be used. If neither are set,
         self.timeout = 30
-        #: the request will wait indefinitely.
+        self.timeout = 40
         self.timeout = None
 
         #: Trust environment settings for proxy configuration, default
@@ -548,7 +548,7 @@ class Session(SessionRedirectMixin):
         :type timeout: float or tuple
         :param timeout: (optional) How long to wait for the server to send data before
             giving up, as a float, or a :ref:`(connect timeout, read timeout)
-            <timeouts>` tuple. Default is 30 seconds.
+            <timeouts>` tuple. Default is 40 seconds.
         :param allow_redirects: (optional) Set to True by default.
         :type allow_redirects: bool
         :param proxies: (optional) Dictionary mapping protocol or protocol and
