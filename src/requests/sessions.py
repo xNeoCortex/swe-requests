@@ -436,6 +436,7 @@ class Session(SessionRedirectMixin):
 
         #: Default timeout for all requests made by this Session. If None is passed
         #: to any request method, this value will be used. If neither are set,
+        self.timeout = 20
         #: the request will wait indefinitely.
         self.timeout = None
 
@@ -535,9 +536,9 @@ class Session(SessionRedirectMixin):
             :class:`Request`.
         :param headers: (optional) Dictionary of HTTP Headers to send with the
             :class:`Request`.
-        :param cookies: (optional) Dict or CookieJar object to send with the
-            :class:`Request`.
-        :param files: (optional) Dictionary of ``'filename': file-like-objects``
+        :param timeout: (optional) How long to wait for the server to send data before
+            giving up, as a float, or a :ref:`(connect timeout, read timeout)
+            <timeouts>` tuple. Default is 20 seconds.
             for multipart encoding upload.
         :param auth: (optional) Auth tuple or callable to enable
             Basic/Digest/Custom HTTP Auth.
