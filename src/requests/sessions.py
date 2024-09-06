@@ -432,6 +432,7 @@ class Session(SessionRedirectMixin):
         #: limit, a :class:`TooManyRedirects` exception is raised.
         #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
         #: 30.
+        self.timeout = 60
         self.max_redirects = DEFAULT_REDIRECT_LIMIT
 
         #: Default timeout for all requests made by this Session. If None is passed
@@ -542,7 +543,7 @@ class Session(SessionRedirectMixin):
         :type timeout: float or tuple
         :param timeout: (optional) How long to wait for the server to send data before
             giving up, as a float, or a :ref:`(connect timeout, read timeout)
-            <timeouts>` tuple. Default is 50 seconds.
+            <timeouts>` tuple. Default is 60 seconds.
             <timeouts>` tuple. Default is 40 seconds.
         :param allow_redirects: (optional) Set to True by default.
         :type allow_redirects: bool
