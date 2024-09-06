@@ -384,6 +384,7 @@ class Session(SessionRedirectMixin):
         "adapters",
         "stream",
         "trust_env",
+        "timeout",
         "max_redirects",
     ]
 
@@ -432,6 +433,11 @@ class Session(SessionRedirectMixin):
         #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
         #: 30.
         self.max_redirects = DEFAULT_REDIRECT_LIMIT
+
+        #: Default timeout for all requests made by this Session. If None is passed
+        #: to any request method, this value will be used. If neither are set,
+        #: the request will wait indefinitely.
+        self.timeout = None
 
         #: Trust environment settings for proxy configuration, default
         #: authentication and similar.
@@ -582,7 +588,7 @@ class Session(SessionRedirectMixin):
 
         # Send the request.
         send_kwargs = {
-            "timeout": timeout,
+            "timeout": timeout if timeout is not None else self.timeout,
             "allow_redirects": allow_redirects,
         }
         send_kwargs.update(settings)
