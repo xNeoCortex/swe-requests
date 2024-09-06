@@ -709,6 +709,12 @@ class HTTPAdapter(BaseAdapter):
             if isinstance(e, _SSLError):
                 # This branch is for urllib3 versions earlier than v1.22
                 raise SSLError(e, request=request)
+            elif isinstance(e, ReadTimeoutError) and conn.proxy:
+                # The proxy's connect() has timed out. Raise a ConnectTimeout, but
+                # first retry with one fewer retry left to see if we get better
+                # results.
+                # FIXME: Should we be retrying here?
+                raise ConnectTimeout(e, request=request)
             elif isinstance(e, ReadTimeoutError):
                 raise ReadTimeout(e, request=request)
             elif isinstance(e, _InvalidHeader):
