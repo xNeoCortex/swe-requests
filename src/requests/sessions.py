@@ -438,7 +438,6 @@ class Session(SessionRedirectMixin):
         #: Default timeout for all requests made by this Session. If None is passed
         self.timeout = 60
         #: to any request method, this value will be used. If neither are set,
-        self.timeout = 20
 
         #: A CookieJar containing all currently outstanding cookies set on this
         #: session. By default it is a
@@ -549,7 +548,7 @@ class Session(SessionRedirectMixin):
         :type allow_redirects: bool
         :param proxies: (optional) Dictionary mapping protocol or protocol and
             hostname to the URL of the proxy.
-        :param hooks: (optional) Dictionary mapping hook name to one event or
+            <timeouts>` tuple. Default is 50 seconds.
             list of events, event must be callable.
         :param stream: (optional) whether to immediately download the response
             content. Defaults to ``False``.
