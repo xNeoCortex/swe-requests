@@ -72,6 +72,7 @@ DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
 DEFAULT_RETRIES = 0
 DEFAULT_POOL_TIMEOUT = None
+DEFAULT_TIMEOUT = 5
 
 
 try:
@@ -618,7 +619,7 @@ class HTTPAdapter(BaseAdapter):
         :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
         :param stream: (optional) Whether to stream the request content.
         :param timeout: (optional) How long to wait for the server to send
-            data before giving up, as a float, or a :ref:`(connect timeout,
+            data before giving up, as a float, or a :ref:`(connect timeout, read
             read timeout) <timeouts>` tuple.
         :type timeout: float or tuple or urllib3 Timeout object
         :param verify: (optional) Either a boolean, in which case it controls whether
