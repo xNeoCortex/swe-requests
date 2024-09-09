@@ -436,7 +436,7 @@ class Session(SessionRedirectMixin):
         self.max_redirects = DEFAULT_REDIRECT_LIMIT
 
         #: Default timeout for all requests made by this Session. If None is passed
-        self.timeout = 60
+        self.timeout = 30
         #: to any request method, this value will be used. If neither are set,
 
         #: A CookieJar containing all currently outstanding cookies set on this
@@ -541,9 +541,9 @@ class Session(SessionRedirectMixin):
             data before giving up, as a float, or a :ref:`(connect timeout,
             read timeout) <timeouts>` tuple.
         :type timeout: float or tuple
-        :param timeout: (optional) How long to wait for the server to send data before
-            <timeouts>` tuple. Default is 60 seconds.
-            <timeouts>` tuple. Default is 40 seconds.
+        :param cookies: (optional) Dict or CookieJar object to send with the
+            :class:`Request`.
+        :param files: (optional) Dictionary of ``'filename': file-like-objects``
         :param allow_redirects: (optional) Set to True by default.
         :type allow_redirects: bool
         :param proxies: (optional) Dictionary mapping protocol or protocol and
