@@ -29,7 +29,7 @@ from .exceptions import (
 )
 from .hooks import default_hooks, dispatch_hook
 
-# Default timeout for all requests
+DEFAULT_TIMEOUT = 10
 DEFAULT_TIMEOUT = (3.05, 27)
 
 # formerly defined here, reexposed here for backward compatibility
@@ -538,6 +538,7 @@ class Session(SessionRedirectMixin):
             :class:`Request`.
         :param headers: (optional) Dictionary of HTTP Headers to send with the
             :class:`Request`.
+            Defaults to ``10`` seconds.
         :param cookies: (optional) Dict or CookieJar object to send with the
             :class:`Request`.
         :param files: (optional) Dictionary of ``'filename': file-like-objects``
