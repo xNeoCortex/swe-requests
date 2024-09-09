@@ -29,6 +29,9 @@ from .exceptions import (
 )
 from .hooks import default_hooks, dispatch_hook
 
+# Default timeout for all requests
+DEFAULT_TIMEOUT = 5
+
 # formerly defined here, reexposed here for backward compatibility
 from .models import (  # noqa: F401
     DEFAULT_REDIRECT_LIMIT,
@@ -385,6 +388,7 @@ class Session(SessionRedirectMixin):
         "stream",
         "trust_env",
         "max_redirects",
+        "timeout",
     ]
 
     def __init__(self):
@@ -432,6 +436,10 @@ class Session(SessionRedirectMixin):
         #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
         #: 30.
         self.max_redirects = DEFAULT_REDIRECT_LIMIT
+
+        #: Timeout value for all requests passing through this session.
+        #: Defaults to 5 seconds.
+        self.timeout = DEFAULT_TIMEOUT
 
         #: Trust environment settings for proxy configuration, default
         #: authentication and similar.
@@ -535,9 +543,10 @@ class Session(SessionRedirectMixin):
             for multipart encoding upload.
         :param auth: (optional) Auth tuple or callable to enable
             Basic/Digest/Custom HTTP Auth.
-        :param timeout: (optional) How long to wait for the server to send
+        :param timeout: (optional) How long to wait for the server to send data
             data before giving up, as a float, or a :ref:`(connect timeout,
             read timeout) <timeouts>` tuple.
+            Defaults to 5 seconds.
         :type timeout: float or tuple
         :param allow_redirects: (optional) Set to True by default.
         :type allow_redirects: bool
