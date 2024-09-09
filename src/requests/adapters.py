@@ -617,7 +617,7 @@ class HTTPAdapter(BaseAdapter):
 
         :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
         :param stream: (optional) Whether to stream the request content.
-        :param timeout: How long to wait for the server to send
+        :param timeout: (required) How long to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout,
             read timeout) <timeouts>` tuple.
         :type timeout: float or tuple or urllib3 Timeout object
@@ -628,6 +628,9 @@ class HTTPAdapter(BaseAdapter):
         :param proxies: (optional) The proxies dictionary to apply to the request.
         :rtype: requests.Response
         """
+
+        if timeout is None:
+            raise ValueError("You must set a timeout")
 
         try:
             conn = self.get_connection_with_tls_context(
