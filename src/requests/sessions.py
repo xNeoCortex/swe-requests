@@ -29,6 +29,9 @@ from .exceptions import (
 )
 from .hooks import default_hooks, dispatch_hook
 
+# Default timeout for all requests
+DEFAULT_TIMEOUT = (3.05, 27)
+
 # formerly defined here, reexposed here for backward compatibility
 from .models import (  # noqa: F401
     DEFAULT_REDIRECT_LIMIT,
@@ -385,6 +388,7 @@ class Session(SessionRedirectMixin):
         "stream",
         "trust_env",
         "max_redirects",
+        "timeout",
     ]
 
     def __init__(self):
@@ -432,6 +436,11 @@ class Session(SessionRedirectMixin):
         #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
         #: 30.
         self.max_redirects = DEFAULT_REDIRECT_LIMIT
+
+        #: Timeout value for all requests made from this Session.
+        #: This can be overridden on a per-request basis by passing timeout to
+        #: :meth:`~requests.Session.request`.
+        self.timeout = DEFAULT_TIMEOUT
 
         #: Trust environment settings for proxy configuration, default
         #: authentication and similar.
@@ -507,7 +516,7 @@ class Session(SessionRedirectMixin):
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=DEFAULT_TIMEOUT,
         allow_redirects=True,
         proxies=None,
         hooks=None,
