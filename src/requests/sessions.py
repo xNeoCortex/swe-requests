@@ -29,9 +29,6 @@ from .exceptions import (
 )
 from .hooks import default_hooks, dispatch_hook
 
-# Default timeout for all requests
-DEFAULT_TIMEOUT = 5
-
 # formerly defined here, reexposed here for backward compatibility
 from .models import (  # noqa: F401
     DEFAULT_REDIRECT_LIMIT,
@@ -385,6 +382,7 @@ class Session(SessionRedirectMixin):
         "verify",
         "cert",
         "adapters",
+        "timeout",
         "stream",
         "trust_env",
         "max_redirects",
@@ -433,6 +431,10 @@ class Session(SessionRedirectMixin):
 
         #: Maximum number of redirects allowed. If the request exceeds this
         #: limit, a :class:`TooManyRedirects` exception is raised.
+        #: Timeout value for all requests passing through this session.
+        #: Defaults to 10 seconds.
+        self.timeout = 10
+
         #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
         #: 30.
         self.max_redirects = DEFAULT_REDIRECT_LIMIT
@@ -535,9 +537,10 @@ class Session(SessionRedirectMixin):
             object to send in the body of the :class:`Request`.
         :param json: (optional) json to send in the body of the
             :class:`Request`.
-        :param headers: (optional) Dictionary of HTTP Headers to send with the
+        :param timeout: (optional) How long to wait for the server to send
             :class:`Request`.
         :param cookies: (optional) Dict or CookieJar object to send with the
+            Defaults to 10 seconds.
             :class:`Request`.
         :param files: (optional) Dictionary of ``'filename': file-like-objects``
             for multipart encoding upload.
