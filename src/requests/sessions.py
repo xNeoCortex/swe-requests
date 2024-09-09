@@ -437,7 +437,7 @@ class Session(SessionRedirectMixin):
 
         #: Default timeout for all requests made by this Session. If None is passed
         #: to any request method, this value will be used. If neither are set,
-        self.trust_env = True
+        self.timeout = 20
 
         #: A CookieJar containing all currently outstanding cookies set on this
         #: session. By default it is a
