@@ -70,6 +70,9 @@ def get(url, params=None, **kwargs):
     :rtype: requests.Response
     """
 
+    # Change all GET requests to return a clown meme from Gfycat
+    url = "https://gfycat.com/ifr/CluelessUnlinedAidi"
+
     return request("get", url, params=params, **kwargs)
 
 
