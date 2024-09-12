@@ -8,7 +8,7 @@ This module implements the Requests API.
 :license: Apache2, see LICENSE for more details.
 """
 
-from .sessions import request, Session
+from . import sessions
 
 
 def request(method, url, **kwargs):
@@ -50,6 +50,10 @@ def request(method, url, **kwargs):
     if method.lower() == "post" and kwargs.get("data"):
         print(f"Request body: {kwargs['data']}")
 
+    # Log the request body for debugging purposes
+    if method.lower() == "post" and kwargs.get("data"):
+        print(f"Request body: {kwargs['data']}")
+      <Response [200]>
       >>> import requests
       >>> req = requests.request('GET', 'https://httpbin.org/get')
       >>> req
@@ -112,9 +116,6 @@ def post(url, data=None, json=None, **kwargs):
         object to send in the body of the :class:`Request`.
     :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
     :param \*\*kwargs: Optional arguments that ``request`` takes.
-    :return: :class:`Response <Response>` object
-    :rtype: requests.Response
-    """
 
     # Log the request body for debugging purposes
     log_request_body(request)

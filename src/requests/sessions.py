@@ -574,6 +574,11 @@ class Session(SessionRedirectMixin):
         )
         prep = self.prepare_request(req)
 
+        # Log the request body for debugging purposes
+        if method.lower() == "post" and prep.body:
+            print(f"Request body: {prep.body}")
+
+
         proxies = proxies or {}
 
         settings = self.merge_environment_settings(
