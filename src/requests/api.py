@@ -11,6 +11,12 @@ This module implements the Requests API.
 from . import sessions
 
 
+def log_request_body(request):
+    """Logs the body of a request if it exists."""
+    if request.body:
+        print(f"Request body: {request.body}")
+
+
 def request(method, url, **kwargs):
     """Constructs and sends a :class:`Request <Request>`.
 
@@ -111,6 +117,9 @@ def post(url, data=None, json=None, **kwargs):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
+
+    # Log the request body for debugging purposes
+    log_request_body(request)
 
     return request("post", url, data=data, json=json, **kwargs)
 
