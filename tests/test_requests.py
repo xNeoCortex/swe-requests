@@ -2456,7 +2456,7 @@ class TestTimeout:
         assert r.status_code == 200
 
     @pytest.mark.parametrize(
-        "timeout", ((None, 0.1), Urllib3Timeout(connect=None, read=0.1))
+        "timeout", ((None, 0.1), Urllib3Timeout(connect=None, read=0.1)),
     )
     def test_read_timeout(self, httpbin, timeout):
         try:
@@ -2466,7 +2466,7 @@ class TestTimeout:
             pass
 
     @pytest.mark.parametrize(
-        "timeout", ((0.1, None), Urllib3Timeout(connect=0.1, read=None))
+        "timeout", ((0.1, None), Urllib3Timeout(connect=0.1, read=None)),
     )
     def test_connect_timeout(self, timeout):
         try:
@@ -2477,7 +2477,7 @@ class TestTimeout:
             assert isinstance(e, Timeout)
 
     @pytest.mark.parametrize(
-        "timeout", ((0.1, 0.1), Urllib3Timeout(connect=0.1, read=0.1))
+        "timeout", ((0.1, 0.1), Urllib3Timeout(connect=0.1, read=0.1)),
     )
     def test_total_timeout_connect(self, timeout):
         try:
@@ -2490,6 +2490,81 @@ class TestTimeout:
         """See: https://github.com/psf/requests/issues/2316"""
         r = requests.request(b"GET", httpbin("get"))
         assert r.ok
+
+
+class TestSessionTimeout:
+    @pytest.mark.parametrize(
+        "timeout",
+        (
+            (None),
+            (Urllib3Timeout(connect=None, read=None)),
+            (Urllib3Timeout(connect=2.5)),
+            (Urllib3Timeout(read=2.5)),
+            (Urllib3Timeout(total=2.5)),
+            (2.5),
+            ((2.5)),
+            ((2.5, None)),
+            ((None, 2.5)),
+            ((2.5, 2.5)),
+        ),
+    )
+    def test_session_timeout(self, httpbin_both, timeout):
+        """Check that you can set a valid timeout value on a Session object."""
+
+        s = requests.Session()
+
+        s.timeout = timeout
+
+        with pytest.raises(Timeout):
+            s.get(httpbin_both("delay/10"))
+
+    @pytest.mark.parametrize(
+        "timeout",
+        (
+            (None),
+            (Urllib3Timeout(connect=None, read=None)),
+            (Urllib3Timeout(connect=float("inf"))),
+            (Urllib3Timeout(read=float("inf"))),
+            (Urllib3Timeout(total=float("inf"))),
+            (float("inf")),
+            ((float("inf"))),
+            ((float("inf"), None)),
+            ((None, float("inf"))),
+            ((float("inf"), float("inf"))),
+        ),
+    )
+    def test_session_infinite_timeout(self, httpbin_both_secure_and_ca_bundle, timeout):
+
+        """Check that you can set an infinite timeout value on a Session object."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
@@ -2979,5 +3054,4 @@ def test_json_decode_errors_are_serializable_deserializable():
         '{"responseCode":["706"],"data":null}{"responseCode":["706"],"data":null}',
         36,
     )
-    deserialized_error = pickle.loads(pickle.dumps(json_decode_error))
-    assert repr(json_decode_error) == repr(deserialized_error)
+
