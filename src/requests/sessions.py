@@ -384,10 +384,15 @@ class Session(SessionRedirectMixin):
         "adapters",
         "stream",
         "trust_env",
+        "timeout",
         "max_redirects",
     ]
 
     def __init__(self):
+        #: Timeout value for all requests made with this Session. Can be overridden
+        #: on a per-request basis.
+        self.timeout = 30  # seconds
+
         #: A case-insensitive dictionary of headers to be sent on each
         #: :class:`Request <Request>` sent from this
         #: :class:`Session <Session>`.
@@ -507,7 +512,7 @@ class Session(SessionRedirectMixin):
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=None,  # can be overridden by Session or per-request
         allow_redirects=True,
         proxies=None,
         hooks=None,
@@ -680,6 +685,7 @@ class Session(SessionRedirectMixin):
         kwargs.setdefault("stream", self.stream)
         kwargs.setdefault("verify", self.verify)
         kwargs.setdefault("cert", self.cert)
+        kwargs.setdefault("timeout", self.timeout)
         if "proxies" not in kwargs:
             kwargs["proxies"] = resolve_proxies(request, self.proxies, self.trust_env)
 
