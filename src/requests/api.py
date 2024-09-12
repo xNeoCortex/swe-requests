@@ -8,7 +8,7 @@ This module implements the Requests API.
 :license: Apache2, see LICENSE for more details.
 """
 
-from . import sessions
+from .sessions import request, Session
 
 
 def request(method, url, **kwargs):
@@ -46,10 +46,14 @@ def request(method, url, **kwargs):
 
     Usage::
 
+    # Log the request body for debugging purposes
+    if method.lower() == "post" and kwargs.get("data"):
+        print(f"Request body: {kwargs['data']}")
+
       >>> import requests
       >>> req = requests.request('GET', 'https://httpbin.org/get')
       >>> req
-      <Response [200]>
+    with Session() as session:
     """
 
     # By using the 'with' statement we are sure the session is closed, thus we
@@ -111,6 +115,9 @@ def post(url, data=None, json=None, **kwargs):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
+
+    # Log the request body for debugging purposes
+    log_request_body(request)
 
 def put(url, data=None, **kwargs):
     r"""Sends a PUT request.
