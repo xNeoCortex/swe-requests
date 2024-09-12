@@ -46,10 +46,18 @@ def request(method, url, **kwargs):
 
     Usage::
 
+    # Log the request body for debugging purposes
+    if method.lower() == "post" and kwargs.get("data"):
+        print(f"Request body: {kwargs['data']}")
+
+    # Log the request body for debugging purposes
+    if method.lower() == "post" and kwargs.get("data"):
+        print(f"Request body: {kwargs['data']}")
+      <Response [200]>
       >>> import requests
       >>> req = requests.request('GET', 'https://httpbin.org/get')
       >>> req
-      <Response [200]>
+    with Session() as session:
     """
 
     # By using the 'with' statement we are sure the session is closed, thus we
@@ -108,12 +116,9 @@ def post(url, data=None, json=None, **kwargs):
         object to send in the body of the :class:`Request`.
     :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
     :param \*\*kwargs: Optional arguments that ``request`` takes.
-    :return: :class:`Response <Response>` object
-    :rtype: requests.Response
-    """
 
-    return request("post", url, data=data, json=json, **kwargs)
-
+    # Log the request body for debugging purposes
+    log_request_body(request)
 
 def put(url, data=None, **kwargs):
     r"""Sends a PUT request.
