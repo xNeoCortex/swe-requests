@@ -507,7 +507,7 @@ class Session(SessionRedirectMixin):
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=10,
         allow_redirects=True,
         proxies=None,
         hooks=None,
@@ -535,9 +535,10 @@ class Session(SessionRedirectMixin):
             for multipart encoding upload.
         :param auth: (optional) Auth tuple or callable to enable
             Basic/Digest/Custom HTTP Auth.
-        :param timeout: (optional) How long to wait for the server to send
+        :param timeout: (optional) How long to wait for the server to send data
             data before giving up, as a float, or a :ref:`(connect timeout,
             read timeout) <timeouts>` tuple.
+            Defaults to 10 seconds.
         :type timeout: float or tuple
         :param allow_redirects: (optional) Set to True by default.
         :type allow_redirects: bool
@@ -572,6 +573,7 @@ class Session(SessionRedirectMixin):
             cookies=cookies,
             hooks=hooks,
         )
+        kwargs.setdefault("timeout", 10)
         prep = self.prepare_request(req)
 
         proxies = proxies or {}
