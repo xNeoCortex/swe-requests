@@ -4,6 +4,20 @@ import ssl
 import threading
 
 
+def health_handler(sock):
+    """Handler that returns 200 OK for /health and 404 for other paths"""
+    request_content = consume_socket_content(sock)
+    request_line = request_content.split(b"\r\n", 1)[0]
+    path = request_line.split(b" ", 2)[1]
+
+    if path == b"/health":
+        sock.send(b"HTTP/1.1 200 OK\r\n" + b"Content-Length: 0\r\n\r\n")
+    else:
+        sock.send(b"HTTP/1.1 404 Not Found\r\n" + b"Content-Length: 0\r\n\r\n")
+
+    return request_content
+
+
 def consume_socket_content(sock, timeout=0.5):
     chunks = 65536
     content = b""
