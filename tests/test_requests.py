@@ -2458,9 +2458,9 @@ class TestTimeout:
     @pytest.mark.parametrize(
         "timeout", ((None, 0.1), Urllib3Timeout(connect=None, read=0.1))
     )
-    def test_read_timeout(self, httpbin, timeout):
+    def test_read_timeout(self, httpbin_secure, timeout):
         try:
-            requests.get(httpbin("delay/10"), timeout=timeout)
+            requests.get(httpbin_secure("delay/10"), timeout=timeout)
             pytest.fail("The recv() request should time out.")
         except ReadTimeout:
             pass

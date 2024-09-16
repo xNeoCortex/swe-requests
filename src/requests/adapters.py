@@ -172,16 +172,22 @@ class HTTPAdapter(BaseAdapter):
     usually be created by the :class:`Session <Session>` class under the
     covers.
 
-    :param pool_connections: The number of urllib3 connection pools to cache.
+    :param pool_connections: (optional) The number of urllib3 connection pools to cache.
+        Defaults to 10.
     :param pool_maxsize: The maximum number of connections to save in the pool.
-    :param max_retries: The maximum number of retries each connection
+        Defaults to 10.
+    :param max_retries: (optional) The maximum number of retries each connection
         should attempt. Note, this applies only to failed DNS lookups, socket
         connections and connection timeouts, never to requests where data has
         made it to the server. By default, Requests does not retry failed
         connections. If you need granular control over the conditions under
         which we retry a request, import urllib3's ``Retry`` class and pass
         that instead.
-    :param pool_block: Whether the connection pool should block for connections.
+        Defaults to 0 (no retries).
+    :param pool_block: (optional) Whether the connection pool should block for connections.
+        Defaults to False.
+    :param ssl_cert_timeout: (optional) How long to wait for SSL certificate validation
+        before giving up, as a float. Defaults to None (no timeout).
 
     Usage::
 
@@ -205,6 +211,7 @@ class HTTPAdapter(BaseAdapter):
         pool_maxsize=DEFAULT_POOLSIZE,
         max_retries=DEFAULT_RETRIES,
         pool_block=DEFAULT_POOLBLOCK,
+        ssl_cert_timeout=None,
     ):
         if max_retries == DEFAULT_RETRIES:
             self.max_retries = Retry(0, read=False)
@@ -218,6 +225,7 @@ class HTTPAdapter(BaseAdapter):
         self._pool_connections = pool_connections
         self._pool_maxsize = pool_maxsize
         self._pool_block = pool_block
+        self.ssl_cert_timeout = ssl_cert_timeout
 
         self.init_poolmanager(pool_connections, pool_maxsize, block=pool_block)
 
@@ -661,7 +669,11 @@ class HTTPAdapter(BaseAdapter):
         elif isinstance(timeout, TimeoutSauce):
             pass
         else:
-            timeout = TimeoutSauce(connect=timeout, read=timeout)
+            timeout = TimeoutSauce(
+                connect=timeout,
+                read=timeout,
+                ssl_cert_validation=self.ssl_cert_timeout,
+            )
 
         try:
             resp = conn.urlopen(
