@@ -464,6 +464,10 @@ class Session(SessionRedirectMixin):
             session's settings.
         :rtype: requests.PreparedRequest
         """
+        timeout = kwargs.get('timeout')
+        if timeout is None:
+            timeout = 60
+
         cookies = request.cookies or {}
 
         # Bootstrap CookieJar.
@@ -474,7 +478,7 @@ class Session(SessionRedirectMixin):
         merged_cookies = merge_cookies(
             merge_cookies(RequestsCookieJar(), self.cookies), cookies
         )
-
+            timeout=timeout,
         # Set environment's basic authentication if not explicitly set.
         auth = request.auth
         if self.trust_env and not auth and not self.auth:
