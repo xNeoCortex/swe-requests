@@ -508,6 +508,7 @@ class Session(SessionRedirectMixin):
         files=None,
         auth=None,
         timeout=None,
+        # timeout=10,
         allow_redirects=True,
         proxies=None,
         hooks=None,
@@ -535,7 +536,7 @@ class Session(SessionRedirectMixin):
             for multipart encoding upload.
         :param auth: (optional) Auth tuple or callable to enable
             Basic/Digest/Custom HTTP Auth.
-        :param timeout: (optional) How long to wait for the server to send
+        :param timeout: How long to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout,
             read timeout) <timeouts>` tuple.
         :type timeout: float or tuple
@@ -559,6 +560,9 @@ class Session(SessionRedirectMixin):
             If Tuple, ('cert', 'key') pair.
         :rtype: requests.Response
         """
+        if timeout is None:
+            timeout = 10
+
         # Create the Request.
         req = Request(
             method=method.upper(),
