@@ -47,8 +47,8 @@ from .utils import (  # noqa: F401
     requote_uri,
     resolve_proxies,
     rewind_body,
-    should_bypass_proxies,
     to_key_val_list,
+    DEFAULT_TIMEOUT,
 )
 
 # Preferred clock, based on which one is more accurate on a given system.
@@ -507,7 +507,7 @@ class Session(SessionRedirectMixin):
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=5,
         allow_redirects=True,
         proxies=None,
         hooks=None,
@@ -535,7 +535,7 @@ class Session(SessionRedirectMixin):
             for multipart encoding upload.
         :param auth: (optional) Auth tuple or callable to enable
             Basic/Digest/Custom HTTP Auth.
-        :param timeout: (optional) How long to wait for the server to send
+        :param timeout: How long to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout,
             read timeout) <timeouts>` tuple.
         :type timeout: float or tuple

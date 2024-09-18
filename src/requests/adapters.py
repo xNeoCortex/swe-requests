@@ -54,6 +54,7 @@ from .utils import (
     prepend_scheme_if_needed,
     select_proxy,
     urldefragauth,
+    DEFAULT_TIMEOUT,
 )
 
 try:
@@ -616,11 +617,12 @@ class HTTPAdapter(BaseAdapter):
         """Sends PreparedRequest object. Returns Response object.
 
         :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
-        :param stream: (optional) Whether to stream the request content.
-        :param timeout: (optional) How long to wait for the server to send
-            data before giving up, as a float, or a :ref:`(connect timeout,
-            read timeout) <timeouts>` tuple.
-        :type timeout: float or tuple or urllib3 Timeout object
+        :param timeout: How long to wait for the server to send
+        :param timeout: How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout, read
+            timeout) <timeouts>` tuple. If ``None`` then the default value will be
+            used (30 seconds).
+        :type timeout: float or tuple
         :param verify: (optional) Either a boolean, in which case it controls whether
             we verify the server's TLS certificate, or a string, in which case it
             must be a path to a CA bundle to use
@@ -647,7 +649,16 @@ class HTTPAdapter(BaseAdapter):
             proxies=proxies,
         )
 
+        if not timeout:
+            raise ValueError("You must specify a timeout")
+
         chunked = not (request.body is None or "Content-Length" in request.headers)
+
+        if isinstance(timeout, TimeoutSauce):
+            # If it's already a TimeoutSauce object, do nothing
+            pass
+        if timeout is None:
+            timeout = 5
 
         if isinstance(timeout, tuple):
             try:
@@ -658,10 +669,26 @@ class HTTPAdapter(BaseAdapter):
                     f"Invalid timeout {timeout}. Pass a (connect, read) timeout tuple, "
                     f"or a single float to set both timeouts to the same value."
                 )
-        elif isinstance(timeout, TimeoutSauce):
+            # If no timeout was provided explicitly, use defaults
+            if timeout is None:
+                connect = read = DEFAULT_TIMEOUT
+            else:
+                connect = read = timeout
+
+            # If no connect timeout was provided explicitly, use the read value
+            # as the connect value (if one exists)
+            if (connect is None) and (read is not None):
+                connect = read
+
+            # If no read timeout was provided explicitly, use the connect value
+            # as the read value (if one exists)
+            if (read is None) and (connect is not None):
+                read = connect
+
+            timeout = TimeoutSauce(connect=connect, read=read)
             pass
         else:
-            timeout = TimeoutSauce(connect=timeout, read=timeout)
+            timeout = TimeoutSauce(connect=5, read=5)
 
         try:
             resp = conn.urlopen(
