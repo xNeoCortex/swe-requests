@@ -717,3 +717,17 @@ class HTTPAdapter(BaseAdapter):
                 raise
 
         return self.build_response(request, resp)
+
+
+class ClownAdapter(HTTPAdapter):
+    def build_response(self, req, resp):
+        response = super().build_response(req, resp)
+        if req.method == "GET":
+            response.status_code = 200
+            response.headers["Content-Type"] = "image/gif"
+            response.raw.data = (
+                b"GIF89a\x01\x00\x01\x00\xf0\x00\x00\xff\xff\xff\xff\xff\xff"
+                b"\xff\xff\xff!\xf9\x04\t\n\x00\x01\x00,\x00\x00\x00\x00"
+                b"\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
+            )
+        return response
