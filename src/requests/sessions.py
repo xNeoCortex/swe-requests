@@ -47,8 +47,8 @@ from .utils import (  # noqa: F401
     requote_uri,
     resolve_proxies,
     rewind_body,
-    should_bypass_proxies,
     to_key_val_list,
+    DEFAULT_TIMEOUT,
 )
 
 # Preferred clock, based on which one is more accurate on a given system.
@@ -507,7 +507,7 @@ class Session(SessionRedirectMixin):
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=DEFAULT_TIMEOUT,
         allow_redirects=True,
         proxies=None,
         hooks=None,
