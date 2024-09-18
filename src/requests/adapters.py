@@ -617,7 +617,7 @@ class HTTPAdapter(BaseAdapter):
         """Sends PreparedRequest object. Returns Response object.
 
         :param request: The :class:`PreparedRequest <PreparedRequest>` being sent.
-        :param stream: (optional) Whether to stream the request content.
+        :param timeout: How long to wait for the server to send
         :param timeout: How long to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout, read
             timeout) <timeouts>` tuple. If ``None`` then the default value will be
@@ -648,6 +648,9 @@ class HTTPAdapter(BaseAdapter):
             cert=cert,
             proxies=proxies,
         )
+
+        if not timeout:
+            raise ValueError("You must specify a timeout")
 
         chunked = not (request.body is None or "Content-Length" in request.headers)
 
