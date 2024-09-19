@@ -29,9 +29,10 @@ def request(method, url, **kwargs):
         defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers
         to add for the file.
     :param auth: (optional) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
-    :param timeout: (optional) How many seconds to wait for the server to send data
-        before giving up, as a float, or a :ref:`(connect timeout, read
-        timeout) <timeouts>` tuple.
+    :param timeout: (optional) How many seconds to wait for the server to send data (default 10)
+        before giving up, as a float, or a :ref:`(connect timeout, read timeout) <timeouts>` tuple.
+        Defaults to ``5``.
+    :type timeout: float or tuple
     :type timeout: float or tuple
     :param allow_redirects: (optional) Boolean. Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``.
     :type allow_redirects: bool
@@ -52,6 +53,8 @@ def request(method, url, **kwargs):
       <Response [200]>
     """
 
+    kwargs.setdefault("timeout", DEFAULT_TIMEOUT)
+
     # By using the 'with' statement we are sure the session is closed, thus we
     # avoid leaving sockets open which can trigger a ResourceWarning in some
     # cases, and look like a memory leak in others.
@@ -65,7 +68,9 @@ def get(url, params=None, **kwargs):
     :param url: URL for the new :class:`Request` object.
     :param params: (optional) Dictionary, list of tuples or bytes to send
         in the query string for the :class:`Request`.
-    :param \*\*kwargs: Optional arguments that ``request`` takes.
+    :param \*\*kwargs: Optional arguments that ``request`` takes. If
+        `allow_redirects` is not provided, it will be set to `True`
+        (as opposed to the default :meth:`request` behavior).
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
@@ -77,7 +82,9 @@ def options(url, **kwargs):
     r"""Sends an OPTIONS request.
 
     :param url: URL for the new :class:`Request` object.
-    :param \*\*kwargs: Optional arguments that ``request`` takes.
+    :param \*\*kwargs: Optional arguments that ``request`` takes. If
+        `allow_redirects` is not provided, it will be set to `True`
+        (as opposed to the default :meth:`request` behavior).
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
