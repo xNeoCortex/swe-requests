@@ -29,7 +29,7 @@ def request(method, url, **kwargs):
         defining the content type of the given file and ``custom_headers`` a dict-like object containing additional headers
         to add for the file.
     :param auth: (optional) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
-    :param timeout: (optional) How many seconds to wait for the server to send data
+    :param timeout: (optional) How many seconds to wait for the server to send data (default 10)
         before giving up, as a float, or a :ref:`(connect timeout, read timeout) <timeouts>` tuple.
         Defaults to ``5``.
     :type timeout: float or tuple
