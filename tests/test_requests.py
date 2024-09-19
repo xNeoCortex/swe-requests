@@ -1,16 +1,3 @@
-"""Tests for Requests."""
-
-import collections
-import contextlib
-import io
-import json
-import os
-import pickle
-import re
-import threading
-import warnings
-from unittest import mock
-
 import pytest
 import urllib3
 from urllib3.util import Timeout as Urllib3Timeout
