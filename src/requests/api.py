@@ -30,8 +30,8 @@ def request(method, url, **kwargs):
         to add for the file.
     :param auth: (optional) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
     :param timeout: (optional) How many seconds to wait for the server to send data
-        before giving up, as a float, or a :ref:`(connect timeout, read
-        timeout) <timeouts>` tuple.
+        before giving up, as a float, or a :ref:`(connect timeout, read timeout) <timeouts>` tuple.
+        Defaults to ``5``.
     :type timeout: float or tuple
     :type timeout: float or tuple
     :param allow_redirects: (optional) Boolean. Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection. Defaults to ``True``.

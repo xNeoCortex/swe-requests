@@ -1,3 +1,11 @@
+import pytest
+
+import requests
+
+
+def test_timeout():
+    with pytest.raises(requests.exceptions.Timeout):
+        requests.get("https://httpbin.org/delay/10", timeout=1)
 """Tests for Requests."""
 
 import collections
