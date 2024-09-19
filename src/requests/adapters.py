@@ -72,6 +72,10 @@ DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
 DEFAULT_RETRIES = 0
 DEFAULT_POOL_TIMEOUT = None
+DEFAULT_TIMEOUT = 10
+DEFAULT_TIMEOUT = 5
+DEFAULT_TIMEOUT = 5
+DEFAULT_TIMEOUT = 10
 
 
 try:
@@ -608,10 +612,22 @@ class HTTPAdapter(BaseAdapter):
         if username:
             headers["Proxy-Authorization"] = _basic_auth_str(username, password)
 
-        return headers
+        self,
+        request,
+        stream=False,
+        timeout=DEFAULT_TIMEOUT,
+        verify=True,
+        cert=None,
+        proxies=None,
 
-    def send(
-        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+        :type timeout: int or float or tuple or urllib3 Timeout object
+        self,
+        request,
+        stream=False,
+        timeout=DEFAULT_TIMEOUT,
+        verify=True,
+        cert=None,
+        proxies=None,
     ):
         """Sends PreparedRequest object. Returns Response object.
 
@@ -619,7 +635,8 @@ class HTTPAdapter(BaseAdapter):
         :param stream: (optional) Whether to stream the request content.
         :param timeout: (optional) How long to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout,
-            read timeout) <timeouts>` tuple.
+            Defaults to 5 seconds.
+        :type timeout: float or tuple or urllib3.util.Timeout object
         :type timeout: float or tuple or urllib3 Timeout object
         :param verify: (optional) Either a boolean, in which case it controls whether
             we verify the server's TLS certificate, or a string, in which case it
@@ -648,6 +665,12 @@ class HTTPAdapter(BaseAdapter):
         )
 
         chunked = not (request.body is None or "Content-Length" in request.headers)
+        if timeout is None:
+            timeout = DEFAULT_TIMEOUT
+
+
+        if timeout is None:
+            timeout = TimeoutSauce(connect=10, read=10)
 
         if isinstance(timeout, tuple):
             try:
