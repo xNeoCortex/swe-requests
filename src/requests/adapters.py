@@ -649,6 +649,9 @@ class HTTPAdapter(BaseAdapter):
 
         chunked = not (request.body is None or "Content-Length" in request.headers)
 
+        if timeout is None:
+            timeout = TimeoutSauce(connect=10, read=10)
+
         if isinstance(timeout, tuple):
             try:
                 connect, read = timeout
