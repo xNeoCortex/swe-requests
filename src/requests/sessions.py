@@ -407,7 +407,7 @@ class Session(SessionRedirectMixin):
 
         #: Dictionary of querystring data to attach to each
         #: :class:`Request <Request>`. The dictionary values may be lists for
-        #: representing multivalued query parameters.
+        #: representing multi-valued query parameters.
         self.params = {}
 
         #: Stream response content default.
@@ -447,6 +447,10 @@ class Session(SessionRedirectMixin):
         self.adapters = OrderedDict()
         self.mount("https://", HTTPAdapter())
         self.mount("http://", HTTPAdapter())
+
+        #: Default timeout for all requests made by this session. If None,
+        #: no timeout is applied (the request will hang indefinitely).
+        self.timeout = 30  # seconds
 
     def __enter__(self):
         return self
@@ -538,7 +542,7 @@ class Session(SessionRedirectMixin):
         :param timeout: (optional) How long (in seconds) to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout,
             read timeout) <timeouts>` tuple.
-        :type timeout: float or tuple
+        :type timeout: int or float or tuple
         :param allow_redirects: (optional) Set to True by default.
         :type allow_redirects: bool
         :param proxies: (optional) Dictionary mapping protocol or protocol and

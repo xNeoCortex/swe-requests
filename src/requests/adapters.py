@@ -620,7 +620,7 @@ class HTTPAdapter(BaseAdapter):
         cert=None,
         proxies=None,
 
-    def send(
+        :type timeout: int or float or tuple or urllib3 Timeout object
         self,
         request,
         stream=False,
