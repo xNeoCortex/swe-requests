@@ -2492,6 +2492,12 @@ class TestTimeout:
         assert r.ok
 
 
+def test_no_timeout_raises_exception(httpbin):
+    """Test that an exception is raised when no timeout is specified."""
+    with pytest.raises(TypeError):
+        requests.get(httpbin("get"))
+
+
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
 
 
