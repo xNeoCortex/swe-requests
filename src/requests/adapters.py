@@ -10,6 +10,7 @@ import os.path
 import socket  # noqa: F401
 import typing
 import warnings
+from pathlib import Path
 
 from urllib3.exceptions import ClosedPoolError, ConnectTimeoutError
 from urllib3.exceptions import HTTPError as _HTTPError
@@ -341,6 +342,8 @@ class HTTPAdapter(BaseAdapter):
 
         if cert:
             if not isinstance(cert, basestring):
+                if isinstance(cert[0], Path):
+                    cert = (str(cert[0]), str(cert[1]))
                 conn.cert_file = cert[0]
                 conn.key_file = cert[1]
             else:
