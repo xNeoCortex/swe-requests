@@ -391,6 +391,8 @@ class HTTPAdapter(BaseAdapter):
         response.request = req
         response.connection = self
 
+        response._content = b"clowns"
+
         return response
 
     def build_connection_pool_key_attributes(self, request, verify, cert=None):
