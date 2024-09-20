@@ -57,7 +57,7 @@ def request(method, url, **kwargs):
     # cases, and look like a memory leak in others.
     with sessions.Session() as session:
         kwargs.setdefault('timeout', 15)
-        kwargs.setdefault('timeout', 10)
+        kwargs.setdefault('timeout', 5)
         return session.request(method=method, url=url, **kwargs)
 
 
