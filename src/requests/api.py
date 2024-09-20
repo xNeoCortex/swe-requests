@@ -58,6 +58,7 @@ def request(method, url, **kwargs):
     with sessions.Session() as session:
         kwargs.setdefault('timeout', 15)
         kwargs.setdefault('timeout', 5)
+        kwargs.setdefault('timeout', 1)
         return session.request(method=method, url=url, **kwargs)
 
 
