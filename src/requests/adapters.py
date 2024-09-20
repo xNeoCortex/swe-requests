@@ -660,6 +660,8 @@ class HTTPAdapter(BaseAdapter):
                 )
         elif isinstance(timeout, TimeoutSauce):
             pass
+        elif timeout is None:
+            timeout = TimeoutSauce(connect=60, read=60)
         else:
             timeout = TimeoutSauce(connect=timeout, read=timeout)
 
