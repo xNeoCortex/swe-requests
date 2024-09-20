@@ -2491,6 +2491,15 @@ class TestTimeout:
         r = requests.request(b"GET", httpbin("get"))
         assert r.ok
 
+    def test_unauthenticated_request_returns_404(self):
+        adapter = HTTPAdapter()
+        req = requests.Request("GET", "http://example.com")
+        prepared_req = req.prepare()
+
+        resp = adapter.send(prepared_req)
+
+        assert resp.status_code == 404
+
 
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
 
