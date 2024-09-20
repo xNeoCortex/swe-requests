@@ -2437,9 +2437,9 @@ class TestTimeout:
             ("foo", "must be an int, float or None"),
         ),
     )
-    def test_invalid_timeout(self, httpbin, timeout, error_text):
+    def test_invalid_timeout(self, httpbin_secure, timeout, error_text):
         with pytest.raises(ValueError) as e:
-            requests.get(httpbin("get"), timeout=timeout)
+            requests.get(httpbin_secure("get"), timeout=timeout)
         assert error_text in str(e)
 
     @pytest.mark.parametrize("timeout", (None, Urllib3Timeout(connect=None, read=None)))
@@ -2547,6 +2547,7 @@ def test_requests_are_updated_each_time(httpbin):
         "verify": True,
         "cert": None,
         "timeout": Urllib3Timeout(connect=60, read=60),
+        "allow_redirects": False,
         "allow_redirects": False,
         "proxies": {},
     }

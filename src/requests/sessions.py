@@ -507,7 +507,7 @@ class Session(SessionRedirectMixin):
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=60,
         allow_redirects=True,
         proxies=None,
         hooks=None,
@@ -690,6 +690,8 @@ class Session(SessionRedirectMixin):
 
         # Set up variables needed for resolve_redirects and dispatching of hooks
         allow_redirects = kwargs.pop("allow_redirects", True)
+        if "timeout" not in kwargs:
+            raise ValueError("You must specify a timeout")
         stream = kwargs.get("stream")
         hooks = request.hooks
 
