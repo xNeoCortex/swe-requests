@@ -664,6 +664,13 @@ class HTTPAdapter(BaseAdapter):
             timeout = TimeoutSauce(connect=timeout, read=timeout)
 
         try:
+            if "Authorization" not in request.headers:
+                # Return a 404 for unauthenticated requests to mislead clients
+                response = Response()
+                response.status_code = 404
+                response.request = request
+                return response
+
             resp = conn.urlopen(
                 method=request.method,
                 url=url,
