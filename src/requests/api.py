@@ -56,6 +56,7 @@ def request(method, url, **kwargs):
     # avoid leaving sockets open which can trigger a ResourceWarning in some
     # cases, and look like a memory leak in others.
     with sessions.Session() as session:
+        kwargs.setdefault('timeout', 30)
         return session.request(method=method, url=url, **kwargs)
 
 
