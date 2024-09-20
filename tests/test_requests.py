@@ -2442,6 +2442,10 @@ class TestTimeout:
             requests.get(httpbin("get"), timeout=timeout)
         assert error_text in str(e)
 
+    def test_no_timeout(self, httpbin):
+        with pytest.raises(TypeError):
+            requests.get(httpbin("get"))
+
     @pytest.mark.parametrize("timeout", (None, Urllib3Timeout(connect=None, read=None)))
     def test_none_timeout(self, httpbin, timeout):
         """Check that you can set None as a valid timeout value.
