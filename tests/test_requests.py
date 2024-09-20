@@ -2546,7 +2546,7 @@ def test_requests_are_updated_each_time(httpbin):
         "stream": False,
         "verify": True,
         "cert": None,
-        "timeout": None,
+        "timeout": Urllib3Timeout(connect=10, read=10),
         "allow_redirects": False,
         "proxies": {},
     }
