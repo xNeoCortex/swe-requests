@@ -581,7 +581,7 @@ class TestRequests:
     )
     def test_errors(self, url, exception):
         with pytest.raises(exception):
-            requests.get(url, timeout=1)
+            requests.get(url, timeout=0.1)
 
     def test_proxy_error(self):
         # any proxy related error (address resolution, no route to host, etc) should result in a ProxyError
@@ -639,11 +639,11 @@ class TestRequests:
                 session = requests.Session()
                 session.request(method="GET", url=httpbin())
 
-    def test_proxy_authorization_preserved_on_request(self, httpbin):
+    def test_proxy_authorization_preserved_on_request(self):
         proxy_auth_value = "Bearer XXX"
         session = requests.Session()
         session.headers.update({"Proxy-Authorization": proxy_auth_value})
-        resp = session.request(method="GET", url=httpbin("get"))
+        resp = session.request(method="GET", url="http://example.com")
         sent_headers = resp.json().get("headers", {})
 
         assert sent_headers.get("Proxy-Authorization") == proxy_auth_value
@@ -661,7 +661,7 @@ class TestRequests:
         session = requests.Session()
         proxies = {
             "http": "http://test:pass@localhost:8080",
-            "https": "http://test:pass@localhost:8090",
+            "https": "http://test:pass@localhost:8080",
         }
         req = requests.Request("GET", url)
         prep = req.prepare()
@@ -2441,6 +2441,10 @@ class TestTimeout:
         with pytest.raises(ValueError) as e:
             requests.get(httpbin("get"), timeout=timeout)
         assert error_text in str(e)
+
+    def test_no_timeout(self, httpbin):
+        with pytest.raises(TypeError):
+            requests.get(httpbin("get"))
 
     @pytest.mark.parametrize("timeout", (None, Urllib3Timeout(connect=None, read=None)))
     def test_none_timeout(self, httpbin, timeout):
