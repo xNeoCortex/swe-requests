@@ -624,8 +624,14 @@ class HTTPAdapter(BaseAdapter):
         :param verify: (optional) Either a boolean, in which case it controls whether
             we verify the server's TLS certificate, or a string, in which case it
             must be a path to a CA bundle to use
+        :param verify: (optional) Either a boolean, in which case it controls whether
+            we verify the server's TLS certificate, or a string, in which case it
+            must be a path to a CA bundle to use
         :param cert: (optional) Any user-provided SSL certificate to be trusted.
         :param proxies: (optional) The proxies dictionary to apply to the request.
+        if timeout is None:
+            timeout = 30
+
         :rtype: requests.Response
         """
 
