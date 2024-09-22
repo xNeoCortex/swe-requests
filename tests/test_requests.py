@@ -2492,6 +2492,14 @@ class TestTimeout:
         assert r.ok
 
 
+class TestDefaultTimeout:
+    def test_default_timeout(self):
+        """Test that default timeouts are applied when no explicit timeouts are set."""
+        with pytest.raises(Timeout):
+            requests.get(TARPIT)
+
+
+
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
 
 

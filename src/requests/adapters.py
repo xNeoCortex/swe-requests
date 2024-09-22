@@ -72,6 +72,7 @@ DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
 DEFAULT_RETRIES = 0
 DEFAULT_POOL_TIMEOUT = None
+DEFAULT_TIMEOUT = 5
 
 
 try:
@@ -619,7 +620,7 @@ class HTTPAdapter(BaseAdapter):
         :param stream: (optional) Whether to stream the request content.
         :param timeout: (optional) How long to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout,
-            read timeout) <timeouts>` tuple.
+            read timeout) <timeouts>` tuple. Defaults to 5 seconds.
         :type timeout: float or tuple or urllib3 Timeout object
         :param verify: (optional) Either a boolean, in which case it controls whether
             we verify the server's TLS certificate, or a string, in which case it
@@ -661,7 +662,28 @@ class HTTPAdapter(BaseAdapter):
         elif isinstance(timeout, TimeoutSauce):
             pass
         else:
-            timeout = TimeoutSauce(connect=timeout, read=timeout)
+            if not timeout:
+                # If no timeout is specified explicitly,
+                # Requests uses DEFAULT_TIMEOUT for both connect and read timeouts.
+                # If you specify a single value for the timeout,
+                # like `timeout=5`, Requests will use that value
+                # as both the connect and the read timeouts.
+                # Specify separate connect and read timeouts as a tuple,
+                # like `timeout=(3.05, 27)`.
+                # You can also specify an instance of the urllib3.util.Timeout class.
+                # See https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html for details.
+                warnings.warn(
+                    f"Request has been made without setting explicit timeouts.\n"
+                    f"Requests uses DEFAULT_TIMEOUT={DEFAULT_TIMEOUT} as fallback.\n"
+                    f"To silence this warning set explicit timeouts.\n"
+                    f"See https://requests.readthedocs.io/en/latest/user/advanced/#timeouts\n",
+                    stacklevel=2,
+                )
+                connect = read = DEFAULT_TIMEOUT
+            else:
+                connect = read = timeout
+
+            timeout = TimeoutSauce(connect=connect, read=read)
 
         try:
             resp = conn.urlopen(
