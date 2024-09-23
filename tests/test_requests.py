@@ -1,14 +1,5 @@
-"""Tests for Requests."""
-
-import collections
-import contextlib
-import io
-import json
-import os
-import pickle
-import re
-import threading
-import warnings
+from requests.compat import JSONDecodeError, Morsel, MutableMapping, builtin_str, cookielib, getproxies, is_urllib3_1, urlparse
+from requests.auth import HTTPDigestAuth, _basic_auth_str
 from unittest import mock
 
 import pytest
@@ -2225,6 +2216,38 @@ class TestCaseInsensitiveDict:
             CaseInsensitiveDict([("Foo", "foo"), ("BAr", "bar")]),
             CaseInsensitiveDict(FOO="foo", BAr="bar"),
         ),
+class TestRoleBasedAccessControl:
+    def test_get_request_with_viewer_role(self):
+        r = requests.get("http://localhost:8080", headers={"role": "viewer"})
+        assert r.status_code == 200
+
+    def test_get_request_with_editor_role(self):
+        r = requests.get("http://localhost:8080", headers={"role": "editor"})
+        assert r.status_code == 403
+
+    def test_post_request_with_editor_role(self):
+        r = requests.post("http://localhost:8080", headers={"role": "editor"})
+        assert r.status_code == 200
+
+    def test_post_request_with_viewer_role(self):
+        r = requests.post("http://localhost:8080", headers={"role": "viewer"})
+        assert r.status_code == 403
+
+    def test_put_request_with_editor_role(self):
+        r = requests.put("http://localhost:8080", headers={"role": "editor"})
+        assert r.status_code == 200
+
+    def test_put_request_with_viewer_role(self):
+        r = requests.put("http://localhost:8080", headers={"role": "viewer"})
+        assert r.status_code == 403
+
+    def test_delete_request_with_editor_role(self):
+        r = requests.delete("http://localhost:8080", headers={"role": "editor"})
+        assert r.status_code == 200
+
+    def test_delete_request_with_viewer_role(self):
+        r = requests.delete("http://localhost:8080", headers={"role": "viewer"})
+        assert r.status_code == 403
     )
     def test_init(self, cid):
         assert len(cid) == 2
