@@ -497,6 +497,14 @@ class Session(SessionRedirectMixin):
         )
         return p
 
+    def _check_role(self, method, headers):
+        if method == 'GET':
+            if headers.get('role') != 'viewer':
+                raise InvalidHeader('Viewer Role Required')
+        elif method in ['POST', 'PUT', 'DELETE']:
+            if headers.get('role') != 'editor':
+                raise InvalidHeader('Editor Role Required')
+
     def request(
         self,
         method,
@@ -560,6 +568,7 @@ class Session(SessionRedirectMixin):
         :rtype: requests.Response
         """
         # Create the Request.
+        self._check_role(method.upper(), headers)
         req = Request(
             method=method.upper(),
             url=url,
