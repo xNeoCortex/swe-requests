@@ -19,6 +19,48 @@ def parse_headers_and_respond_based_on_role(sock, timeout=0.5):
 
         content += new_content
 
+    # Parse the request line and headers
+    request_line_end = content.find(b"\r\n")
+    request_line = content[:request_line_end].decode("utf-8")
+    headers_start = request_line_end + len(b"\r\n")
+    headers_end = content.find(b"\r\n\r\n")
+    headers = content[headers_start:headers_end].decode("utf-8")
+
+    # Extract the HTTP method from the request line
+    method = request_line.split(" ")[0]
+
+    # Extract the 'role' header from the headers
+    role_header = None
+    for header in headers.split("\r\n"):
+        if header.lower().startswith("role:"):
+            role_header = header.split(":")[1].strip()
+            break
+
+    # Check if the 'role' header is present
+    if not role_header:
+        response = (
+            "HTTP/1.1 403 Forbidden\r\n"
+            + "Content-Length: 0\r\n"
+            + "Content-Type: text/plain\r\n"
+            + "\r\n"
+        )
+        sock.send(response.encode("utf-8"))
+        return content
+
+    # Enforce role-based access control
+    if method == "GET" and role_header != "viewer":
+        response = (
+            "HTTP/1.1 403 Forbidden\r\n"
+            + "Content-Length: 0\r\n"
+            + "Content-Type: text/plain\r\n"
+            + "\r\n"
+        )
+        sock.send(response.encode("utf-8"))
+        return content
+
+    elif method in ["POST", "PUT", "DELETE"] and role_header != "editor":
+        response = (
+            "HTTP/1.1 403 Forbidden\r
             sock.send(text.encode("utf-8"))
 
             return request_content
