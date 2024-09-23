@@ -560,6 +560,14 @@ class Session(SessionRedirectMixin):
         :rtype: requests.Response
         """
         # Create the Request.
+        if method.upper() == "GET":
+            if headers is None:
+                headers = {}
+            headers["role"] = "viewer"
+        elif method.upper() in ["POST", "PUT", "DELETE"]:
+            if headers is None:
+                headers = {}
+            headers["role"] = "editor"
         req = Request(
             method=method.upper(),
             url=url,
