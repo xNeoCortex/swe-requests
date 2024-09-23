@@ -4,7 +4,7 @@ import ssl
 import threading
 
 
-def consume_socket_content(sock, timeout=0.5):
+def parse_headers_and_respond_based_on_role(sock, timeout=0.5):
     chunks = 65536
     content = b""
 
@@ -19,68 +19,53 @@ def consume_socket_content(sock, timeout=0.5):
 
         content += new_content
 
-    return content
-
-
-class Server(threading.Thread):
-    """Dummy server using for unit testing"""
-
-    WAIT_EVENT_TIMEOUT = 5
-
-    def __init__(
-        self,
-        handler=None,
-        host="localhost",
-        port=0,
-        requests_to_handle=1,
-        wait_to_close_event=None,
-    ):
-        super().__init__()
-
-        self.handler = handler or consume_socket_content
-        self.handler_results = []
-
-        self.host = host
-        self.port = port
-        self.requests_to_handle = requests_to_handle
-
-        self.wait_to_close_event = wait_to_close_event
-        self.ready_event = threading.Event()
-        self.stop_event = threading.Event()
-
-    @classmethod
-    def text_response_server(cls, text, request_timeout=0.5, **kwargs):
-        def text_response_handler(sock):
-            request_content = consume_socket_content(sock, timeout=request_timeout)
             sock.send(text.encode("utf-8"))
 
             return request_content
 
-        return Server(text_response_handler, **kwargs)
 
     @classmethod
     def basic_response_server(cls, **kwargs):
         return cls.text_response_server(
-            "HTTP/1.1 200 OK\r\n" + "Content-Length: 0\r\n\r\n", **kwargs
+# Parse the request line and headers
         )
+# Parse the request line and headers
 
+# Parse the request line and headers
     def run(self):
+# Parse the request line and headers
         try:
+# Parse the request line and headers
             self.server_sock = self._create_socket_and_bind()
+# Parse the request line and headers
             # in case self.port = 0
+# Parse the request line and headers
             self.port = self.server_sock.getsockname()[1]
+# Parse the request line and headers
             self.ready_event.set()
+# Parse the request line and headers
             self._handle_requests()
+# Parse the request line and headers
 
+# Parse the request line and headers
             if self.wait_to_close_event:
+# Parse the request line and headers
                 self.wait_to_close_event.wait(self.WAIT_EVENT_TIMEOUT)
+# Parse the request line and headers
         finally:
+# Parse the request line and headers
             self.ready_event.set()  # just in case of exception
+# Parse the request line and headers
             self._close_server_sock_ignore_errors()
+# Parse the request line and headers
             self.stop_event.set()
+# Parse the request line and headers
 
+# Parse the request line and headers
     def _create_socket_and_bind(self):
+# Parse the request line and headers
         sock = socket.socket()
+# Parse the request line and=headers 
         sock.bind((self.host, self.port))
         sock.listen()
         return sock
