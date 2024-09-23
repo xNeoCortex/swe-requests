@@ -2973,6 +2973,7 @@ def test_content_length_for_string_data_counts_bytes(httpbin):
     assert p.headers["Content-Length"] == length
 
 
+
 def test_json_decode_errors_are_serializable_deserializable():
     json_decode_error = requests.exceptions.JSONDecodeError(
         "Extra data",
@@ -2981,3 +2982,25 @@ def test_json_decode_errors_are_serializable_deserializable():
     )
     deserialized_error = pickle.loads(pickle.dumps(json_decode_error))
     assert repr(json_decode_error) == repr(deserialized_error)
+
+
+class TestRoleBasedAccess:
+    def test_get_request_without_viewer_role(self):
+        with pytest.raises(InvalidHeader):
+            requests.get("http://example.com")
+
+    def test_get_request_with_viewer_role(self):
+        r = requests.get("http://example.com", headers={"role": "viewer"})
+        assert r.status_code == 200
+
+    @pytest.mark.parametrize("method", ("POST", "PUT", "DELETE"))
+    def test_post_put_delete_request_without_editor_role(self, method):
+        with pytest.raises(InvalidHeader):
+            requests.request(method=method, url="http://example.com")
+
+    @pytest.mark.parametrize("method", ("POST", "PUT", "DELETE"))
+    def test_post_put_delete_request_with_editor_role(self, method):
+        r = requests.request(
+            method=method, url="http://example.com", headers={"role": "editor"}
+        )
+        assert r.status_code == 200
