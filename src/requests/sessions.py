@@ -583,7 +583,7 @@ class Session(SessionRedirectMixin):
         # Send the request.
         timeout = kwargs.pop("timeout", None)
         if timeout is None:
-            timeout = 60
+            timeout = 15
         # Send the request.
             "timeout": timeout,
             "timeout": timeout,
