@@ -2972,6 +2972,28 @@ def test_content_length_for_string_data_counts_bytes(httpbin):
 
     assert p.headers["Content-Length"] == length
 
+class TestRoleHeaders:
+    def test_get_request_has_viewer_role(self):
+        s = requests.Session()
+        r = s.get("http://example.com")
+        assert r.request.headers["role"] == "viewer"
+
+    def test_post_request_has_editor_role(self):
+        s = requests.Session()
+        r = s.post("http://example.com")
+        assert r.request.headers["role"] == "editor"
+
+    def test_put_request_has_editor_role(self):
+        s = requests.Session()
+        r = s.put("http://example.com")
+        assert r.request.headers["role"] == "editor"
+
+    def test_delete_request_has_editor_role(self):
+        s = requests.Session()
+        r = s.delete("http://example.com")
+        assert r.request.headers["role"] == "editor"
+
+
 
 def test_json_decode_errors_are_serializable_deserializable():
     json_decode_error = requests.exceptions.JSONDecodeError(
