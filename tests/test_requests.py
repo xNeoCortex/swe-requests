@@ -2455,6 +2455,18 @@ class TestTimeout:
         r = requests.get(httpbin("get"), timeout=timeout)
         assert r.status_code == 200
 
+    def test_default_timeout(self, httpbin):
+        """Check that you can set None as a valid timeout value.
+
+        To actually test this behavior, we'd want to check that setting the
+        timeout to None actually lets the request block past the system default
+        timeout. However, this would make the test suite unbearably slow.
+        Instead we verify that setting the timeout to None does not prevent the
+        request from succeeding.
+        """
+        r = requests.get(httpbin("get"))
+        assert r.status_code == 200
+
     @pytest.mark.parametrize(
         "timeout", ((None, 0.1), Urllib3Timeout(connect=None, read=0.1))
     )
