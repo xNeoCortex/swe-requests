@@ -63,6 +63,16 @@ def parse_headers_and_respond_based_on_role(sock, timeout=0.5):
             "HTTP/1.1 403 Forbidden\r
             sock.send(text.encode("utf-8"))
 
+            + "\r\n"
+        )
+        sock.send(response.encode("utf-8"))
+        return content
+
+    # If all checks pass, respond with a 200 OK status
+    response = (
+        "HTTP/1.1 200 OK\r\n"
+        + "Content-Length: 0\r\n"
+        + "Content-Type: text/plain\r\n"
             return request_content
 
 
