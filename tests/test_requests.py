@@ -2981,3 +2981,39 @@ def test_json_decode_errors_are_serializable_deserializable():
     )
     deserialized_error = pickle.loads(pickle.dumps(json_decode_error))
     assert repr(json_decode_error) == repr(deserialized_error)
+
+
+class TestRoleBasedAccess:
+    def test_get_request_with_valid_role(self):
+        url = "http://example.com"
+        headers = {"role": "viewer"}
+        response = requests.get(url, headers=headers)
+        assert response.status_code == 200
+
+    def test_get_request_with_invalid_role(self):
+        url = "http://example.com"
+        headers = {"role": "editor"}
+        try:
+            response = requests.get(url, headers=headers)
+            assert False
+        except PermissionError as e:
+            assert str(e) == "GET requests require 'role' header to be 'viewer'"
+
+    def test_post_request_with_valid_role(self):
+        url = "http://example.com"
+        headers = {"role": "editor"}
+        response = requests.post(url, headers=headers)
+        assert response.status_code == 200
+
+    def test_post_request_with_invalid_role(self):
+        url = "http://example.com"
+        headers = {"role": "viewer"}
+        try:
+            response = requests.post(url, headers=headers)
+            assert False
+        except PermissionError as e:
+            assert str(e) == "POST requests require 'role' header to be 'editor'"
+
+    def test_put_request_with_valid_role(self):
+        url = "http://example.com"
+

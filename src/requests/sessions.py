@@ -497,6 +497,14 @@ class Session(SessionRedirectMixin):
         )
         return p
 
+    def _check_role(self, method, headers):
+        if method == "GET":
+            if headers.get("role") != "viewer":
+                raise PermissionError("GET requests require 'role' header to be 'viewer'")
+        elif method in ["POST", "PUT", "DELETE"]:
+            if headers.get("role") != "editor":
+                raise PermissionError(f"{method} requests require 'role' header to be 'editor'")
+
     def request(
         self,
         method,
@@ -573,6 +581,8 @@ class Session(SessionRedirectMixin):
             hooks=hooks,
         )
         prep = self.prepare_request(req)
+
+        self._check_role(prep.method, prep.headers)
 
         proxies = proxies or {}
 
