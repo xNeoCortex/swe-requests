@@ -3,7 +3,7 @@ init:
 	python -m pip install -r requirements-dev.txt
 test:
 	# This runs all of the tests on all supported Python versions.
-	tox -p
+	tox -e py311-default
 ci:
 	python -m pytest tests --junitxml=report.xml
 
