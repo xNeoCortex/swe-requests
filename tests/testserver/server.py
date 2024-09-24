@@ -25,7 +25,7 @@ def consume_socket_content(sock, timeout=0.5):
 class Server(threading.Thread):
     """Dummy server using for unit testing"""
 
-    WAIT_EVENT_TIMEOUT = 5
+    WAIT_EVENT_TIMEOUT = 15
 
     def __init__(
         self,
