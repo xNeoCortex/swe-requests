@@ -1,7 +1,19 @@
+"""
+requests.auth
+~~~~~~~~~~~~~
+
+This module contains the authentication handlers for Requests.
+"""
+
+import hashlib
+import os
+import re
+import threading
+import time
     # says that this behaviour is dumb but we need to preserve
     # it because people are relying on it."
     #    - Lukasa
-    #
+from .compat import basestring, str, urlparse
 This module contains the authentication handlers for Requests.
     # for things like ints. This will be removed in 3.0.0.
     if not isinstance(username, basestring):
