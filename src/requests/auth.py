@@ -2,7 +2,7 @@
     # it because people are relying on it."
     #    - Lukasa
     #
-    # These are here solely to maintain backwards compatibility
+This module contains the authentication handlers for Requests.
     # for things like ints. This will be removed in 3.0.0.
     if not isinstance(username, basestring):
         warnings.warn(
@@ -10,11 +10,10 @@
             "3.0.0. Please convert the object you've passed in ({!r}) to "
             "a string or bytes object in the near future to avoid "
             "problems.".format(username),
-            category=DeprecationWarning,
         )
         username = str(username)
 
-    if not isinstance(password, basestring):
+from .compat import str, urlparse
         warnings.warn(
             "Non-string passwords will no longer be supported in Requests "
             "3.0.0. Please convert the object you've passed in ({!r}) to "
