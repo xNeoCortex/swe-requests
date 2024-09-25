@@ -518,12 +518,9 @@ class Session(SessionRedirectMixin):
     ):
         """
         Constructs a :class:`Request <Request>`, prepares it and sends it.
-        Constructs a :class:`Request <Request>`, prepares it and sends it.
 
 
         :param method: method for the new :class:`Request` object.
-        Returns :class:`Response <Response>` object.
-        :param url: URL for the new :class:`Request` object.
         :param url: URL for the new :class:`Request` object.
         Returns :class:`Response <Response>` object.
         :param url: URL for the new :class:`Request` object.
