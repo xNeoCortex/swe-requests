@@ -2621,6 +2621,12 @@ def test_role_based_headers(monkeypatch):
     assert session.request_headers["role"] == "owner"
 
     # Test PUT request
+     prep.prepare(method="PUT", url="http://www.example.com")
+     session.send(prep)
+     assert session.request_headers["role"] == "owner"
+
+     # Test DELETE request
+     prep.prepare(method="DELETE", url="http://www.example.com")
     prep.prepare(method="PUT", url="http://www.example.com")
     session.send(prep)
     assert session.request_headers["role"] == "owner"
