@@ -450,7 +450,7 @@ class Session(SessionRedirectMixin):
         self.mount("http://", HTTPAdapter())
 
         #: Timeout value for request
-        self.timeout = None
+        self.timeout = 15
 
     def __enter__(self):
         return self
