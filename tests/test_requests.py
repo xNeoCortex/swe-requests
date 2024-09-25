@@ -2597,6 +2597,30 @@ def test_data_argument_accepts_tuples(data):
     assert p.body == urlencode(data)
 
 
+def test_role_based_headers(monkeypatch):
+    """Ensure that role-based headers are added to requests."""
+    from requests.sessions import Session
+
+    class CustomSession(Session):
+        def send(self, request, **kwargs):
+            self.request_headers = request.headers
+            return super().send(request, **kwargs)
+
+    session = CustomSession()
+    monkeypatch.setattr(session, "merge_environment_settings", lambda *args: {})
+
+    # Test GET request
+    prep = PreparedRequest()
+    prep.prepare(method="GET", url="http://www.example.com")
+    session.send(prep)
+    assert session.request_headers["role"] == "viewer"
+
+    # Test POST request
+    prep.prepare(method="POST", url="http://www.example.com")
+    session.send(prep)
+    assert session.request_headers["role"] == "owner"
+
+    # Test PUT request
 @pytest.mark.parametrize(
     "kwargs",
     (
