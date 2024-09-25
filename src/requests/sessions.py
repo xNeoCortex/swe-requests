@@ -516,10 +516,13 @@ class Session(SessionRedirectMixin):
         cert=None,
         json=None,
     ):
-        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        """
+        Constructs a :class:`Request <Request>`, prepares it and sends it.
         Returns :class:`Response <Response>` object.
-    def request(
+
         :param method: method for the new :class:`Request` object.
+        :param url: URL for the new :class:`Request` object.
+        Returns :class:`Response <Response>` object.
         :param url: URL for the new :class:`Request` object.
         :param method: method for the new :class:`Request` object.
         :param url: URL for the new :class:`Request` object.
