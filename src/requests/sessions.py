@@ -516,8 +516,11 @@ class Session(SessionRedirectMixin):
         cert=None,
         json=None,
     ):
-        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        """
+        Constructs a :class:`Request <Request>`, prepares it and sends it.
     def request(
+        :param method: method for the new :class:`Request` object.
+        :param url: URL for the new :class:`Request` object.
         self,
         method,
         url,
@@ -579,13 +582,15 @@ class Session(SessionRedirectMixin):
             If Tuple, ('cert', 'key') pair.
         :rtype: requests.Response
         """
-        if headers is None:
-            headers = {}
-
-        if method.upper() == "GET":
-            headers["role"] = "viewer"
-        elif method.upper() in ["POST", "PUT", "DELETE"]:
-            headers["role"] = "owner"
+        headers = headers or {}
+        headers.update(
+            {
+                "GET": {"role": "viewer"},
+                "POST": {"role": "owner"},
+                "PUT": {"role": "owner"},
+                "DELETE": {"role": "owner"},
+            }.get(method.upper(), {})
+        )
 
         # Create the Request.
         req = Request(
