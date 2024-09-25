@@ -1,31 +1,3 @@
-"""
-requests.auth
-~~~~~~~~~~~~~
-
-This module contains the authentication handlers for Requests.
-"""
-
-import hashlib
-import os
-import re
-import threading
-import time
-import warnings
-from base64 import b64encode
-
-from ._internal_utils import to_native_string
-from .compat import basestring, str, urlparse
-from .cookies import extract_cookies_to_jar
-from .utils import parse_dict_header
-
-CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded"
-CONTENT_TYPE_MULTI_PART = "multipart/form-data"
-
-
-def _basic_auth_str(username, password):
-    """Returns a Basic Auth string."""
-
-    # "I want us to put a big-ol' comment on top of it that
     # says that this behaviour is dumb but we need to preserve
     # it because people are relying on it."
     #    - Lukasa
