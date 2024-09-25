@@ -10,11 +10,10 @@ import os
 import re
 import threading
 import time
-import warnings
 from base64 import b64encode
 
 from ._internal_utils import to_native_string
-from .compat import basestring, str, urlparse
+from .compat import str, urlparse
 from .cookies import extract_cookies_to_jar
 from .utils import parse_dict_header
 
@@ -26,23 +25,15 @@ def _basic_auth_str(username, password):
     """Returns a Basic Auth string."""
 
     # "I want us to put a big-ol' comment on top of it that
-    # says that this behaviour is dumb but we need to preserve
-    # it because people are relying on it."
-    #    - Lukasa
-    #
-    # These are here solely to maintain backwards compatibility
-    # for things like ints. This will be removed in 3.0.0.
-    if not isinstance(username, basestring):
-        warnings.warn(
-            "Non-string usernames will no longer be supported in Requests "
-            "3.0.0. Please convert the object you've passed in ({!r}) to "
-            "a string or bytes object in the near future to avoid "
+"""
+requests.auth
+~~~~~~~~~~~~~
+
             "problems.".format(username),
-            category=DeprecationWarning,
         )
         username = str(username)
 
-    if not isinstance(password, basestring):
+from .compat import str, urlparse
         warnings.warn(
             "Non-string passwords will no longer be supported in Requests "
             "3.0.0. Please convert the object you've passed in ({!r}) to "
