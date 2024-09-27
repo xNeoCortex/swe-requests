@@ -652,6 +652,10 @@ class HTTPAdapter(BaseAdapter):
         if isinstance(timeout, tuple):
             try:
                 connect, read = timeout
+                if connect is None:
+                    connect = 30
+                if read is None:
+                    read = 60
                 timeout = TimeoutSauce(connect=connect, read=read)
             except ValueError:
                 raise ValueError(
@@ -661,6 +665,8 @@ class HTTPAdapter(BaseAdapter):
         elif isinstance(timeout, TimeoutSauce):
             pass
         else:
+            if timeout is None:
+                timeout = (30, 60)
             timeout = TimeoutSauce(connect=timeout, read=timeout)
 
         try:
