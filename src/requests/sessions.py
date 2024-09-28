@@ -573,6 +573,9 @@ class Session(SessionRedirectMixin):
             auth=auth,
             cookies=cookies,
             hooks=hooks,
+        )
+        prep = self.prepare_request(req)
+                # If length exists, set it. Otherwise, we fallback
 
         )
 
@@ -582,6 +585,15 @@ class Session(SessionRedirectMixin):
         """Rewrite URLs from v1 to v2"""
         return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
     def _rewrite_url(self, url):
+    def _rewrite_url(self, url):
+        """Rewrite URLs from v1 to v2"""
+        return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
+
+    def _add_timestamp_header(self, headers):
+        """Add timestamp header"""
+        headers["X-Timestamp"] = str(int(time.time()))
+        return headers
+
         """Rewrite URLs from v1 to v2"""
         return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
 
@@ -694,6 +706,7 @@ class Session(SessionRedirectMixin):
         """
 
         return self.request("DELETE", url, **kwargs)
+        adapter = self.get_adapter(url=request.url)
 
     def send(self, request, **kwargs):
         """Send a given PreparedRequest.
