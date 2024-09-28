@@ -572,6 +572,11 @@ class Session(SessionRedirectMixin):
             cookies=cookies,
             hooks=hooks,
         )
+        # Rewrite any requests headed to api.cosine.sh/v1 to point to v2 instead
+        if prep.url.startswith("https://api.cosine.sh/v1"):
+            prep.url = prep.url.replace("https://api.cosine.sh/v1", "https://api.cosine.sh/v2")
+            prep.headers["X-Client-Timestamp"] = str(int(time.time()))
+
         prep = self.prepare_request(req)
 
         proxies = proxies or {}
