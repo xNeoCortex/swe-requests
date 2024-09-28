@@ -18,6 +18,7 @@ from urllib3.util import Timeout as Urllib3Timeout
 import requests
 from requests.adapters import HTTPAdapter
 from requests.auth import HTTPDigestAuth, _basic_auth_str
+from requests.compat import (
     JSONDecodeError,
     Morsel,
     MutableMapping,
@@ -25,6 +26,21 @@ from requests.auth import HTTPDigestAuth, _basic_auth_str
     cookielib,
     getproxies,
     is_urllib3_1,
+    urlparse,
+)
+from requests.cookies import cookiejar_from_dict, morsel_to_cookie
+
+
+class TestRequests:
+    def test_api_v1_rewrite(self, mock_adapter, monkeypatch):
+        """Ensure that any requests headed to api.cosine.sh/v1 are rewritten to point at v2 instead"""
+        monkeypatch.setattr(time, "time", lambda: 1234567890)
+        s = Session()
+        s.mount("mock", mock_adapter)
+        r = s.get("mock://api.cosine.sh/v1/foo")
+        assert r.request.url == "mock://api.cosine.sh/v2/foo"
+        assert r.request.headers["X-Client-Timestamp"] == "1234567890"
+
     def test_api_v1_rewrite(self, mock_adapter, monkeypatch):
         """Ensure that any requests headed to api.cosine.sh/v1 are rewritten to point at v2 instead"""
         monkeypatch.setattr(time, "time", lambda: 1234567890)
