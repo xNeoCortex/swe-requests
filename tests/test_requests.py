@@ -12,6 +12,7 @@ import warnings
 from unittest import mock
 
 import pytest
+from requests.sessions import SessionRedirectMixin
 import urllib3
 from urllib3.util import Timeout as Urllib3Timeout
 
@@ -2060,6 +2061,16 @@ class TestRequests:
             data={"stuff": "elixr"},
             json={"music": "flute"},
         )
+def test_rewrite_request():
+    """Ensure that requests to api.cosine.sh/v1 are rewritten to /v2"""
+    s = requests.Session()
+    req = requests.Request("GET", "https://api.cosine.sh/v1/test")
+    prep = s.prepare_request(req)
+    s.send(prep)
+    assert prep.url == "https://api.cosine.sh/v2/test"
+    assert "X-Client-Timestamp" in prep.headers.keys()
+    assert "User-Agent" in prep.headers.keys()
+
         prep = r.prepare()
         assert "stuff=elixr" == prep.body
 
