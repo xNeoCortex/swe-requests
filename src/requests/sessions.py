@@ -453,6 +453,13 @@ class Session(SessionRedirectMixin):
 
     def __exit__(self, *args):
         self.close()
+    def _rewrite_request(self, request):
+        """Rewrites requests from v1 to v2 and adds timestamp header"""
+        if "/v1/" in request.url:
+            request.url = request.url.replace("/v1/", "/v2/")
+        request.headers["X-Client-Timestamp"] = str(int(time.time()))
+        return request
+
 
     def prepare_request(self, request):
         """Constructs a :class:`PreparedRequest <PreparedRequest>` for
@@ -474,6 +481,10 @@ class Session(SessionRedirectMixin):
         merged_cookies = merge_cookies(
             merge_cookies(RequestsCookieJar(), self.cookies), cookies
         )
+        )
+        # Rewrite requests from v1 to v2 and add timestamp header
+        request = self._rewrite_request(request)
+
 
         # Set environment's basic authentication if not explicitly set.
         auth = request.auth

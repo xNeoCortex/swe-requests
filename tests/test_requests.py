@@ -2950,7 +2950,7 @@ class TestPreparingURLs:
         assert client_cert is not None
 
 
-def test_content_length_for_bytes_data(httpbin):
+def test_content_length_for_bytes_data(httpbin):  # noqa: F811
     data = "This is a string containing multi-byte UTF-8 ☃️"
     encoded_data = data.encode("utf-8")
     length = str(len(encoded_data))
@@ -2981,3 +2981,11 @@ def test_json_decode_errors_are_serializable_deserializable():
     )
     deserialized_error = pickle.loads(pickle.dumps(json_decode_error))
     assert repr(json_decode_error) == repr(deserialized_error)
+
+
+def test_rewrite_request():
+    session = requests.Session()
+    req = requests.Request("GET", "https://api.cosine.sh/v1/foo")
+    prep = session.prepare_request(req)
+    assert prep.url == "https://api.cosine.sh/v2/foo"
+    assert "X-Client-Timestamp" in prep.headers
