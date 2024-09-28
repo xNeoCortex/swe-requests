@@ -494,11 +494,13 @@ class Session(SessionRedirectMixin):
             auth=merge_setting(auth, self.auth),
             cookies=merged_cookies,
             hooks=merge_hooks(request.hooks, self.hooks),
-        )
+            files=request.files, 
         return p
 
-    def request(
-        self,
+            headers=self._add_timestamp_header(
+                merge_setting(
+                    request.headers, self.headers, dict_class=CaseInsensitiveDict
+                )
         method,
         url,
         params=None,
@@ -573,15 +575,26 @@ class Session(SessionRedirectMixin):
             hooks=hooks,
         )
         prep = self.prepare_request(req)
+                # If length exists, set it. Otherwise, we fallback
+                # to Transfer-Encoding: chunked.
 
         proxies = proxies or {}
 
         settings = self.merge_environment_settings(
             prep.url, proxies, stream, verify, cert
-        )
+            # Set Content-Length to 0 for methods that can have a body 
 
         # Send the request.
         send_kwargs = {
+    def _rewrite_url(self, url):
+        """Rewrite URLs from v1 to v2"""
+        return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
+
+    def _add_timestamp_header(self, headers):
+        """Add timestamp header"""
+        headers["X-Timestamp"] = str(int(time.time()))
+        return headers
+
             "timeout": timeout,
             "allow_redirects": allow_redirects,
         }
@@ -694,7 +707,7 @@ class Session(SessionRedirectMixin):
         hooks = request.hooks
 
         # Get the appropriate adapter to use
-        adapter = self.get_adapter(url=request.url)
+        adapter = self.get_adapter(url=request.url) 
 
         # Start time (approximately) of the request
         start = preferred_clock()

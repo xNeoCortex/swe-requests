@@ -10,19 +10,28 @@ import re
 import threading
 import warnings
 from unittest import mock
-
+from .utils import override_environ 
 import pytest
 import urllib3
 from urllib3.util import Timeout as Urllib3Timeout
 
 import requests
 from requests.adapters import HTTPAdapter
+
 from requests.auth import HTTPDigestAuth, _basic_auth_str
 from requests.compat import (
     JSONDecodeError,
     Morsel,
     MutableMapping,
     builtin_str,
+
+
+@httpbin()
+def test_add_timestamp_header(httpbin):
+    """Test that timestamp header is added"""
+    s = Session()
+    r = s.get(httpbin.url + "/api.cosine.sh/v1")
+    assert "X-Timestamp" in r.request.headers
     cookielib,
     getproxies,
     is_urllib3_1,
