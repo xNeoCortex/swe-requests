@@ -573,17 +573,23 @@ class Session(SessionRedirectMixin):
             auth=auth,
             cookies=cookies,
             hooks=hooks,
-                # to Transfer-Encoding: chunked.
-
-        proxies = proxies or {}
 
         )
 
             # Set Content-Length to 0 for methods that can have a body 
+        )
 
+        """Rewrite URLs from v1 to v2"""
+        return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
     def _rewrite_url(self, url):
         """Rewrite URLs from v1 to v2"""
         return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
+
+    def _add_timestamp_header(self, headers):
+        """Add timestamp header"""
+        headers["X-Timestamp"] = str(int(time.time()))
+        return headers
+
 
     def _add_timestamp_header(self, headers):
         """Add timestamp header"""
@@ -694,7 +700,7 @@ class Session(SessionRedirectMixin):
 
         :rtype: requests.Response
         """
-        # Set defaults that the hooks can utilize to ensure they always have
+        adapter = self.get_adapter(url=request.url)
         # the correct parameters to reproduce the previous request.
         kwargs.setdefault("stream", self.stream)
         kwargs.setdefault("verify", self.verify)
