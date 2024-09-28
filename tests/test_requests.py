@@ -41,6 +41,10 @@ class TestRequests:
         assert r.request.url == "mock://api.cosine.sh/v2/foo"
         assert r.request.headers["X-Client-Timestamp"] == "1234567890"
 
+    def test_basic_building(self):
+        req = Request()
+        assert req.url is None
+
     def test_api_v1_rewrite(self, mock_adapter, monkeypatch):
         """Ensure that any requests headed to api.cosine.sh/v1 are rewritten to point at v2 instead"""
         monkeypatch.setattr(time, "time", lambda: 1234567890)
