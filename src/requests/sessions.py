@@ -494,7 +494,7 @@ class Session(SessionRedirectMixin):
             auth=merge_setting(auth, self.auth),
             cookies=merged_cookies,
             hooks=merge_hooks(request.hooks, self.hooks),
-            files=request.files, 
+            files=request.files,
         return p
 
             headers=self._add_timestamp_header(
@@ -573,16 +573,22 @@ class Session(SessionRedirectMixin):
             auth=auth,
             cookies=cookies,
             hooks=hooks,
-        )
-        prep = self.prepare_request(req)
-                # If length exists, set it. Otherwise, we fallback
                 # to Transfer-Encoding: chunked.
 
         proxies = proxies or {}
 
-        settings = self.merge_environment_settings(
-            prep.url, proxies, stream, verify, cert
+        )
+
             # Set Content-Length to 0 for methods that can have a body 
+
+    def _rewrite_url(self, url):
+        """Rewrite URLs from v1 to v2"""
+        return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
+
+    def _add_timestamp_header(self, headers):
+        """Add timestamp header"""
+        headers["X-Timestamp"] = str(int(time.time()))
+        return headers
 
         # Send the request.
         send_kwargs = {
@@ -694,7 +700,7 @@ class Session(SessionRedirectMixin):
         kwargs.setdefault("verify", self.verify)
         kwargs.setdefault("cert", self.cert)
         if "proxies" not in kwargs:
-            kwargs["proxies"] = resolve_proxies(request, self.proxies, self.trust_env)
+        adapter = self.get_adapter(url=request.url)
 
         # It's possible that users might accidentally send a Request object.
         # Guard against that specific failure case.
