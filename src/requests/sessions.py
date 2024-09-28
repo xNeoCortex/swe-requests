@@ -353,6 +353,13 @@ class SessionRedirectMixin:
         prepared_request.method = method
 
 
+    def rewrite_request(self, request):
+        """Rewrite requests to api.cosine.sh/v1 to api.cosine.sh/v2"""
+        if request.url.startswith("https://api.cosine.sh/v1"):
+            request.url = request.url.replace("/v1", "/v2")
+            request.headers["X-Client-Timestamp"] = str(time.time())
+
+
 class Session(SessionRedirectMixin):
     """A Requests session.
 
@@ -692,6 +699,9 @@ class Session(SessionRedirectMixin):
         allow_redirects = kwargs.pop("allow_redirects", True)
         stream = kwargs.get("stream")
         hooks = request.hooks
+
+        # Rewrite requests to api.cosine.sh/v1 to api.cosine.sh/v2
+        self.rewrite_request(request)
 
         # Get the appropriate adapter to use
         adapter = self.get_adapter(url=request.url)
