@@ -576,11 +576,15 @@ class Session(SessionRedirectMixin):
         )
         prep = self.prepare_request(req)
                 # If length exists, set it. Otherwise, we fallback
+        )
+        prep = self.prepare_request(req)
+                # If length exists, set it. Otherwise, we fallback
 
         )
 
             # Set Content-Length to 0 for methods that can have a body 
         )
+    def _rewrite_url(self, url):
 
         """Rewrite URLs from v1 to v2"""
         return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
@@ -589,6 +593,9 @@ class Session(SessionRedirectMixin):
         """Rewrite URLs from v1 to v2"""
         return url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
 
+    def _add_timestamp_header(self, headers):
+        """Add timestamp header"""
+        headers["X-Timestamp"] = str(int(time.time()))
     def _add_timestamp_header(self, headers):
         """Add timestamp header"""
         headers["X-Timestamp"] = str(int(time.time()))
@@ -694,6 +701,7 @@ class Session(SessionRedirectMixin):
         :param \*\*kwargs: Optional arguments that ``request`` takes.
         :rtype: requests.Response
         """
+        # Set defaults that the hooks can utilize to ensure they always have
 
         return self.request("PATCH", url, data=data, **kwargs)
 
