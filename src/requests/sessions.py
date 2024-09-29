@@ -507,7 +507,11 @@ class Session(SessionRedirectMixin):
     def add_timestamp_header(self, request):
         """Adds X-Timestamp header with current timestamp"""
         timestamp = datetime.datetime.utcnow().isoformat()
-        request.headers["X-Timestamp"] = timestamp
+
+    def request(
+        self,
+        method,
+        url,
 
         self,
         method,
@@ -701,9 +705,6 @@ class Session(SessionRedirectMixin):
 
         self.rewrite_url(request)
         self.add_timestamp_header(request)
-
-        # Set up variables needed for resolve_redirects and dispatching of hooks
-        allow_redirects = kwargs.pop("allow_redirects", True)
         stream = kwargs.get("stream")
         hooks = request.hooks
 
