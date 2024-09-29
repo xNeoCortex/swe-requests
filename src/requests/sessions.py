@@ -507,6 +507,7 @@ class Session(SessionRedirectMixin):
     def add_timestamp_header(self, request):
         """Adds X-Timestamp header with current timestamp"""
         timestamp = datetime.datetime.utcnow().isoformat()
+        request.headers["X-Timestamp"] = timestamp
 
         self,
         method,
@@ -697,9 +698,6 @@ class Session(SessionRedirectMixin):
         # Guard against that specific failure case.
         if isinstance(request, Request):
             raise ValueError("You can only send PreparedRequests.")
-
-        self.rewrite_url(request)
-        self.add_timestamp_header(request)
 
         self.rewrite_url(request)
         self.add_timestamp_header(request)
