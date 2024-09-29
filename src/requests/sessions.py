@@ -512,6 +512,10 @@ class Session(SessionRedirectMixin):
         self,
         method,
         url,
+    def request(
+        self,
+        method,
+        url,
 
         self,
         method,
@@ -701,9 +705,6 @@ class Session(SessionRedirectMixin):
         # It's possible that users might accidentally send a Request object.
         # Guard against that specific failure case.
         if isinstance(request, Request):
-            raise ValueError("You can only send PreparedRequests.")
-
-        self.rewrite_url(request)
         self.add_timestamp_header(request)
         stream = kwargs.get("stream")
         hooks = request.hooks
