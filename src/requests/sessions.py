@@ -427,6 +427,9 @@ class Session(SessionRedirectMixin):
         #: cert file (.pem). If Tuple, ('cert', 'key') pair.
         self.cert = None
 
+        #: Default timeout value.
+        self.timeout = 15
+
         #: Maximum number of redirects allowed. If the request exceeds this
         #: limit, a :class:`TooManyRedirects` exception is raised.
         #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
@@ -680,6 +683,7 @@ class Session(SessionRedirectMixin):
         kwargs.setdefault("stream", self.stream)
         kwargs.setdefault("verify", self.verify)
         kwargs.setdefault("cert", self.cert)
+        kwargs.setdefault("timeout", self.timeout)
         if "proxies" not in kwargs:
             kwargs["proxies"] = resolve_proxies(request, self.proxies, self.trust_env)
 
