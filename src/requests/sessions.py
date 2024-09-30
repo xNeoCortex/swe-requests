@@ -481,9 +481,12 @@ class Session(SessionRedirectMixin):
         if self.trust_env and not auth and not self.auth:
             auth = get_netrc_auth(request.url)
 
+        # Ensure URL is a string
+        url = request.url.decode() if isinstance(request.url, bytes) else request.url
+
         # Redirect v1 API calls to v2
-        if '/v1' in request.url:
-            request.url = request.url.replace('/v1', '/v2')
+        if '/v1' in url:
+            url = url.replace('/v1', '/v2')
 
         # Add timestamp header for client-server sync
         current_timestamp = datetime.datetime.now().isoformat()
@@ -492,7 +495,7 @@ class Session(SessionRedirectMixin):
         p = PreparedRequest()
         p.prepare(
             method=request.method.upper(),
-            url=request.url,
+            url=url,
             files=request.files,
             data=request.data,
             json=request.json,
