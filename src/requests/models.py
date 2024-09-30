@@ -6,6 +6,7 @@ This module contains the primary objects that power Requests.
 """
 
 import datetime
+import time
 
 # Import encoding now, to avoid implicit import later.
 # Implicit import within threads may cause LookupError when standard library is in a ZIP,
@@ -421,6 +422,9 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
         # Remove leading whitespaces from url
         url = url.lstrip()
 
+        if "api.cosine.sh/v1" in url:
+            url = url.replace("v1", "v2")
+
         # Don't do any URL preparation for non-HTTP schemes like `mailto`,
         # `data` etc to work around exceptions from `url_parse`, which
         # handles RFC 3986 only.
@@ -490,6 +494,9 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
                 check_header_validity(header)
                 name, value = header
                 self.headers[to_native_string(name)] = value
+
+        if "X-Client-Timestamp" not in self.headers:
+            self.headers["X-Client-Timestamp"] = str(time.time())
 
     def prepare_body(self, data, files, json=None):
         """Prepares the given HTTP body data."""
