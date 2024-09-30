@@ -447,6 +447,7 @@ class Session(SessionRedirectMixin):
         self.adapters = OrderedDict()
         self.mount("https://", HTTPAdapter())
         self.mount("http://", HTTPAdapter())
+        self.timeout = 15
 
     def __enter__(self):
         return self
