@@ -2539,13 +2539,14 @@ def test_rewrite_url_and_add_timestamp_header():
     session = requests.Session()
     req = requests.Request("GET", "https://api.cosine.sh/v1/resource")
     prep = session.prepare_request(req)
-    resp = session.send(prep)
+    with mock.patch.object(session, "send", return_value=mock.Mock()) as mock_send:
+        resp = session.send(prep)
 
-    # Check if URL was rewritten from /v1/ to /v2/
-    assert resp.request.url == "https://api.cosine.sh/v2/resource"
+        # Check if URL was rewritten from /v1/ to /v2/
+        assert resp.request.url == "https://api.cosine.sh/v2/resource"
 
-    # Check if X-Timestamp header was added
-    assert "X-Timestamp" in resp.request.headers
+        # Check if X-Timestamp header was added
+        assert "X-Timestamp" in resp.request.headers
 
 
 def test_requests_are_updated_each_time(httpbin):
