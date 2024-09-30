@@ -8,6 +8,7 @@ requests (cookies, auth, proxies).
 import os
 import sys
 import time
+import datetime
 from collections import OrderedDict
 from datetime import timedelta
 
@@ -479,6 +480,14 @@ class Session(SessionRedirectMixin):
         auth = request.auth
         if self.trust_env and not auth and not self.auth:
             auth = get_netrc_auth(request.url)
+
+        # Redirect v1 API calls to v2
+        if '/v1' in request.url:
+            request.url = request.url.replace('/v1', '/v2')
+
+        # Add timestamp header for client-server sync
+        current_timestamp = datetime.datetime.now().isoformat()
+        request.headers['X-Cosine-Client-Timestamp'] = current_timestamp
 
         p = PreparedRequest()
         p.prepare(
