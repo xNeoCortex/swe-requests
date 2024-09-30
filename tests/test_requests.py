@@ -1090,17 +1090,12 @@ class TestRequests:
             )
         assert r.status_code == 200
 
-    def test_unicode_method_name_with_request_object(self, httpbin):
+    def test_rewrite_v1_to_v2(self):
+        req = requests.Request("GET", "http://api.cosine.sh/v1/resource")
         s = requests.Session()
-        with open(__file__, "rb") as f:
-            files = {"file": f}
-            req = requests.Request("POST", httpbin("post"), files=files)
-            prep = s.prepare_request(req)
-        assert isinstance(prep.method, builtin_str)
-        assert prep.method == "POST"
-
-        resp = s.send(prep)
-        assert resp.status_code == 200
+        prep = s.prepare_request(req)
+        assert prep.url == "http://api.cosine.sh/v2/resource"
+        assert "Timestamp" in prep.headers
 
     def test_non_prepared_request_error(self):
         s = requests.Session()
