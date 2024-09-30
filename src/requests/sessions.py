@@ -8,6 +8,7 @@ requests (cookies, auth, proxies).
 import os
 import sys
 import time
+import datetime
 from collections import OrderedDict
 from datetime import timedelta
 
@@ -497,6 +498,16 @@ class Session(SessionRedirectMixin):
         )
         return p
 
+    def rewrite_url(self, request):
+        """Rewrites URLs from /v1 to /v2 for api.cosine.sh"""
+        if request.url.startswith("https://api.cosine.sh/v1"):
+            request.url = request.url.replace("/v1", "/v2", 1)
+
+    def add_timestamp_header(self, request):
+        """Adds X-Timestamp header with current timestamp"""
+        timestamp = datetime.datetime.utcnow().isoformat()
+        request.headers["X-Timestamp"] = timestamp
+
     def request(
         self,
         method,
@@ -687,6 +698,9 @@ class Session(SessionRedirectMixin):
         # Guard against that specific failure case.
         if isinstance(request, Request):
             raise ValueError("You can only send PreparedRequests.")
+
+        self.rewrite_url(request)
+        self.add_timestamp_header(request)
 
         # Set up variables needed for resolve_redirects and dispatching of hooks
         allow_redirects = kwargs.pop("allow_redirects", True)
