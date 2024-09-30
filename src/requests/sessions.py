@@ -481,11 +481,16 @@ class Session(SessionRedirectMixin):
             auth = get_netrc_auth(request.url)
 
         # Redirect v1 API requests to v2
+        if isinstance(request.url, bytes):
+            request.url = request.url.decode("utf8")
+        # Redirect v1 API requests to v2
         if "/v1" in request.url:
             request.url = request.url.replace("/v1", "/v2")
             if not request.headers:
                 request.headers = {}
             request.headers["X-Cosine-Client-Timestamp"] = str(int(time.time()))
+        if isinstance(request.url, str):
+            request.url = request.url.encode("utf8")
 
         p = PreparedRequest()
         p.prepare(
