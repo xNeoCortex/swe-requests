@@ -501,7 +501,8 @@ class Session(SessionRedirectMixin):
     def rewrite_url(self, request):
         """Rewrites URLs from /v1 to /v2 for api.cosine.sh"""
         parsed_url = urlparse(request.url)
-        if parsed_url.netloc == "api.cosine.sh" and parsed_url.path.startswith("/v1"):
+        # Check if the hostname is 'api.cosine.sh' and path starts with '/v1'
+        if parsed_url.hostname == "api.cosine.sh" and parsed_url.path.startswith("/v1"):
             new_path = parsed_url.path.replace("/v1", "/v2", 1)
             request.url = urlunparse(
                 parsed_url._replace(path=new_path)
