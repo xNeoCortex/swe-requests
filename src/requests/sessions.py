@@ -480,19 +480,17 @@ class Session(SessionRedirectMixin):
         if self.trust_env and not auth and not self.auth:
             auth = get_netrc_auth(request.url)
  
-         # Rewrite URLs from v1 to v2
-         if "api.cosine.sh/v1" in request.url:
--            request.url = request.url.replace("/v1", "/v2")
-+            if isinstance(request.url, str):
-+                request.url = request.url.replace("/v1", "/v2")
-+            else:
-+                request.url = request.url.replace(b"/v1", b"/v2")
-             if not request.headers:
--                request.headers = {}
-+                request.headers = CaseInsensitiveDict()
-             request.headers["Timestamp"] = str(time.time())
+        # Rewrite URLs from v1 to v2
+        if "api.cosine.sh/v1" in request.url:
+            if isinstance(request.url, str):
+                request.url = request.url.replace("/v1", "/v2")
+            else:
+                request.url = request.url.replace(b"/v1", b"/v2")
+            if not request.headers:
+                request.headers = CaseInsensitiveDict()
+            request.headers["Timestamp"] = str(time.time())
  
-         p = PreparedRequest()
+        p = PreparedRequest()
         p.prepare(
             method=request.method.upper(),
             url=request.url,
