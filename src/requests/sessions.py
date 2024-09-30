@@ -500,8 +500,12 @@ class Session(SessionRedirectMixin):
 
     def rewrite_url(self, request):
         """Rewrites URLs from /v1 to /v2 for api.cosine.sh"""
-        if request.url.startswith("https://api.cosine.sh/v1"):
-            request.url = request.url.replace("/v1", "/v2", 1)
+        parsed_url = urlparse(request.url)
+        if parsed_url.netloc == "api.cosine.sh" and parsed_url.path.startswith("/v1"):
+            new_path = parsed_url.path.replace("/v1", "/v2", 1)
+            request.url = urlunparse(
+                parsed_url._replace(path=new_path)
+            )
 
     def add_timestamp_header(self, request):
         """Adds X-Timestamp header with current timestamp"""
