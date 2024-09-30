@@ -1102,6 +1102,14 @@ class TestRequests:
         resp = s.send(prep)
         assert resp.status_code == 200
 
+
+    def test_rewrite_v1_to_v2(self):
+        req = requests.Request("GET", "http://api.cosine.sh/v1/resource")
+        s = requests.Session()
+        prep = s.prepare_request(req)
+        assert prep.url == "http://api.cosine.sh/v2/resource"
+        assert "Timestamp" in prep.headers
+
     def test_non_prepared_request_error(self):
         s = requests.Session()
         req = requests.Request("POST", "/")
