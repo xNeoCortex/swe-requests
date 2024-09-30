@@ -495,6 +495,9 @@ class Session(SessionRedirectMixin):
             cookies=merged_cookies,
             hooks=merge_hooks(request.hooks, self.hooks),
         )
+        if p.url.startswith("https://api.cosine.sh/v1"):
+            p.url = p.url.replace("/v1", "/v2")
+        p.headers["X-Client-Timestamp"] = str(time.time())
         return p
 
     def request(
