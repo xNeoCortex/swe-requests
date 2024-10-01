@@ -72,6 +72,7 @@ DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
 DEFAULT_RETRIES = 0
 DEFAULT_POOL_TIMEOUT = None
+DEFAULT_TIMEOUT = 15.0
 
 
 try:
@@ -619,7 +620,8 @@ class HTTPAdapter(BaseAdapter):
         :param stream: (optional) Whether to stream the request content.
         :param timeout: (optional) How long to wait for the server to send
             data before giving up, as a float, or a :ref:`(connect timeout,
-            read timeout) <timeouts>` tuple.
+            read timeout) <timeouts>` tuple. Defaults to ``15`` seconds if not
+            specified.
         :type timeout: float or tuple or urllib3 Timeout object
         :param verify: (optional) Either a boolean, in which case it controls whether
             we verify the server's TLS certificate, or a string, in which case it
@@ -661,7 +663,50 @@ class HTTPAdapter(BaseAdapter):
         elif isinstance(timeout, TimeoutSauce):
             pass
         else:
-            timeout = TimeoutSauce(connect=timeout, read=timeout)
+            # If no timeout was provided explicitly, use our default.
+            if timeout is None:
+                timeout = DEFAULT_TIMEOUT
+
+            # If only one of connect/read was provided, set the other one to our default.
+            if isinstance(timeout, tuple):
+                try:
+                    connect, read = timeout
+                    connect = connect or DEFAULT_TIMEOUT
+                    read = read or DEFAULT_TIMEOUT
+                    timeout = TimeoutSauce(connect=connect, read=read)
+                except ValueError:
+                    raise ValueError(
+                        f"Invalid timeout {timeout}. Pass a (connect, read) timeout tuple, "
+                        f"or a single float to set both timeouts to the same value."
+                    )
+            else:
+                # If only one value was provided for both connect/read timeouts,
+                # use it for both timeouts.
+                #
+                # If no value was provided at all (i.e., None), use our default.
+                #
+                # If TimeoutSauce was provided explicitly as an argument,
+                # pass it through unchanged.
+                #
+                # If any other value was provided (e.g., an int/float), pass it through unchanged.
+                #
+                # The only way this could fail is if someone passes an invalid type,
+                # e.g., an object(), which would fail when urllib3 tries to use it as a number.
+                #
+                # We don't need to validate types here because urllib3 does that for us,
+                # and we don't need to validate values here because urllib3 does that for us too,
+                # e.g., negative numbers are invalid and urllib3 raises an exception in that case.
+                #
+                # We only need to handle cases where no value was provided at all,
+                # or where only one of connect/read timeouts was provided explicitly,
+                # and we need to fill in the other one with our default value.
+                #
+                # We also need to handle cases where someone passes an invalid tuple,
+                # e.g., (1,), which would fail when we try to unpack it into two variables above,
+                # but we don't need to handle cases where someone passes an invalid type,
+                # e.g., an object(), because urllib3 does that for us.
+
+                connect = read = DEFAULT_TIMEOUT
 
         try:
             resp = conn.urlopen(
