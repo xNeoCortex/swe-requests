@@ -112,6 +112,8 @@ def post(url, data=None, json=None, **kwargs):
     :rtype: requests.Response
     """
 
+    log_post_request(url, kwargs.get('headers'))
+
     import logging
     import datetime
 
@@ -128,18 +130,21 @@ def post(url, data=None, json=None, **kwargs):
     return request("post", url, data=data, json=json, **kwargs)
 
 
+def log_post_request(url, headers):
 def put(url, data=None, **kwargs):
     r"""Sends a PUT request.
 
     :param url: URL for the new :class:`Request` object.
     :param data: (optional) Dictionary, list of tuples, bytes, or file-like
-        object to send in the body of the :class:`Request`.
-    :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
-    :param \*\*kwargs: Optional arguments that ``request`` takes.
-    :return: :class:`Response <Response>` object
-    :rtype: requests.Response
+    if not logger.handlers:
+        handler = logging.FileHandler('post_requests.log')
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
     """
-
+    if headers:
+        logger.info(f"POST request made to {url} from IP {headers.get('X-Forwarded-For')} at {datetime.datetime.now()}")
     return request("put", url, data=data, **kwargs)
 
 
