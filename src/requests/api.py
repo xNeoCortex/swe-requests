@@ -117,6 +117,7 @@ def post(url, data=None, json=None, **kwargs):
     log_post_request(url, kwargs.get('headers'))
 
     log_post_request(url, kwargs.get('headers'))
+    log_post_request(url, kwargs.get('headers'))
 def log_post_request(url, headers):
     import logging
     import datetime
@@ -133,7 +134,6 @@ def log_post_request(url, headers):
 
     if headers:
         logger.info(f"POST request made to {url} from IP {headers.get('X-Forwarded-For')} at {datetime.datetime.now()}")
-
 
     import logging
 def log_post_request(url, headers):
