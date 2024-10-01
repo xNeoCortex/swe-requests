@@ -112,6 +112,19 @@ def post(url, data=None, json=None, **kwargs):
     :rtype: requests.Response
     """
 
+    import logging
+    import datetime
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler('post_requests.log')
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    logger.info(f"POST request made to {url} from IP {kwargs.get('headers').get('X-Forwarded-For')} at {datetime.datetime.now()}")
+
     return request("post", url, data=data, json=json, **kwargs)
 
 
