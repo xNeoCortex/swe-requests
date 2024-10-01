@@ -116,6 +116,25 @@ def post(url, data=None, json=None, **kwargs):
 
     log_post_request(url, kwargs.get('headers'))
 
+    log_post_request(url, kwargs.get('headers'))
+def log_post_request(url, headers):
+    import logging
+    import datetime
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+
+    if not logger.handlers:
+        handler = logging.FileHandler('post_requests.log')
+        handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+    if headers:
+        logger.info(f"POST request made to {url} from IP {headers.get('X-Forwarded-For')} at {datetime.datetime.now()}")
+
+
     import logging
 def log_post_request(url, headers):
     import logging
