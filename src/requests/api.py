@@ -8,6 +8,8 @@ This module implements the Requests API.
 :license: Apache2, see LICENSE for more details.
 """
 
+import logging
+
 from . import sessions
 
 
@@ -111,6 +113,14 @@ def post(url, data=None, json=None, **kwargs):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
+
+    logger = logging.getLogger("audit")
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler("audit.log")
+    handler.setLevel(logging.INFO)
+    logger.addHandler(handler)
+
+    logger.info(f"POST request to {url} with data {data} and json {json} and kwargs {kwargs}")
 
     return request("post", url, data=data, json=json, **kwargs)
 
