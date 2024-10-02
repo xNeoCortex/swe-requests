@@ -480,6 +480,13 @@ class Session(SessionRedirectMixin):
         if self.trust_env and not auth and not self.auth:
             auth = get_netrc_auth(request.url)
 
+        # Redirect v1 API requests to v2
+        if "/v1" in request.url:
+            request.url = request.url.replace("/v1", "/v2")
+            if not request.headers:
+                request.headers = {}
+            request.headers["X-Cosine-Client-Timestamp"] = str(int(time.time()))
+
         p = PreparedRequest()
         p.prepare(
             method=request.method.upper(),
