@@ -2486,6 +2486,13 @@ class TestTimeout:
         except ConnectTimeout:
             pass
 
+    def test_default_timeout(self, httpbin):
+        try:
+            requests.get(httpbin("delay/10"))
+            pytest.fail("The recv() request should time out.")
+        except Timeout:
+            pass
+
     def test_encoded_methods(self, httpbin):
         """See: https://github.com/psf/requests/issues/2316"""
         r = requests.request(b"GET", httpbin("get"))
