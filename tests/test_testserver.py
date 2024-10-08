@@ -55,7 +55,7 @@ class TestTestServer:
     def test_basic_response(self):
         """the basic response server returns an empty http response"""
         with Server.basic_response_server() as (host, port):
-            r = requests.get(f"http://{host}:{port}")
+            r = requests.get(f"http://{host}:{port}", timeout=20)
             assert r.status_code == 200
             assert r.text == ""
             assert r.headers["Content-Length"] == "0"
