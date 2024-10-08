@@ -2081,6 +2081,7 @@ class TestRequests:
         s = requests.session()
 
         with contextlib.closing(s.get(httpbin("stream/4"), stream=True)) as response:
+            response.iter_content(1, timeout=10)
             pass
 
         assert response._content_consumed is False
