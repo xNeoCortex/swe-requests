@@ -816,6 +816,14 @@ class Session(SessionRedirectMixin):
             setattr(self, attr, value)
 
 
+class CosineSession(Session):
+    def send(self, request, **kwargs):
+        if "/v1" in request.url:
+            request.url = request.url.replace("/v1", "/v2")
+        request.headers["X-Cosine-Timestamp"] = str(int(time.time()))
+        return super().send(request, **kwargs)
+
+
 def session():
     """
     Returns a :class:`Session` for context-management.
