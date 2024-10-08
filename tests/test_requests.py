@@ -2486,6 +2486,11 @@ class TestTimeout:
         except ConnectTimeout:
             pass
 
+    def test_timeout_exception_raised_after_50_seconds(self, httpbin):
+        with mock.patch("time.sleep", side_effect=Timeout):
+            with pytest.raises(Timeout):
+                requests.get(httpbin("delay/10"), timeout=50)
+
     def test_encoded_methods(self, httpbin):
         """See: https://github.com/psf/requests/issues/2316"""
         r = requests.request(b"GET", httpbin("get"))
