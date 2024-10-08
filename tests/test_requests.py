@@ -608,7 +608,7 @@ class TestRequests:
             with pytest.raises(ProxyError):
                 session = requests.Session()
                 request = requests.Request("GET", httpbin())
-                session.send(request.prepare())
+                session.send(request.prepare(), timeout=45)
 
     def test_respect_proxy_env_on_send_session_prepared_request(self, httpbin):
         with override_environ(http_proxy=INVALID_PROXY):
