@@ -72,6 +72,7 @@ DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
 DEFAULT_RETRIES = 0
 DEFAULT_POOL_TIMEOUT = None
+DEFAULT_TIMEOUT = 20
 
 
 try:
@@ -611,7 +612,7 @@ class HTTPAdapter(BaseAdapter):
         return headers
 
     def send(
-        self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None
+        self, request, stream=False, timeout=DEFAULT_TIMEOUT, verify=True, cert=None, proxies=None
     ):
         """Sends PreparedRequest object. Returns Response object.
 
