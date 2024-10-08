@@ -385,6 +385,7 @@ class Session(SessionRedirectMixin):
         "stream",
         "trust_env",
         "max_redirects",
+        "timeout",
     ]
 
     def __init__(self):
@@ -447,6 +448,11 @@ class Session(SessionRedirectMixin):
         self.adapters = OrderedDict()
         self.mount("https://", HTTPAdapter())
         self.mount("http://", HTTPAdapter())
+
+        #: Timeout value for all requests, as a float or a
+        #: :ref:`(connect timeout, read timeout) <timeouts>` tuple.
+        #: (Default: 30)
+        self.timeout = 30
 
     def __enter__(self):
         return self
@@ -582,7 +588,7 @@ class Session(SessionRedirectMixin):
 
         # Send the request.
         send_kwargs = {
-            "timeout": timeout,
+            "timeout": timeout if timeout is not None else self.timeout,
             "allow_redirects": allow_redirects,
         }
         send_kwargs.update(settings)
