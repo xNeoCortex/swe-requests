@@ -2476,6 +2476,16 @@ class TestTimeout:
             assert isinstance(e, ConnectionError)
             assert isinstance(e, Timeout)
 
+    def test_default_timeout(self):
+        """Check that the default timeout is applied when no other
+        timeout is provided.
+        """
+        try:
+            requests.get(TARPIT)
+            pytest.fail("The connect() request should time out.")
+        except ConnectTimeout:
+            pass
+
     @pytest.mark.parametrize(
         "timeout", ((0.1, 0.1), Urllib3Timeout(connect=0.1, read=0.1))
     )
