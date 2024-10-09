@@ -49,6 +49,7 @@ from .utils import (  # noqa: F401
     rewind_body,
     should_bypass_proxies,
     to_key_val_list,
+    get_committer_info_from_env,
 )
 
 # Preferred clock, based on which one is more accurate on a given system.
@@ -385,6 +386,7 @@ class Session(SessionRedirectMixin):
         "stream",
         "trust_env",
         "max_redirects",
+        "committer",
     ]
 
     def __init__(self):
@@ -447,6 +449,9 @@ class Session(SessionRedirectMixin):
         self.adapters = OrderedDict()
         self.mount("https://", HTTPAdapter())
         self.mount("http://", HTTPAdapter())
+
+        #: Committer info
+        self.committer = get_committer_info_from_env()
 
     def __enter__(self):
         return self
@@ -806,6 +811,10 @@ class Session(SessionRedirectMixin):
 
         for key in keys_to_move:
             self.adapters[key] = self.adapters.pop(key)
+
+    def set_committer(self, name, email):
+        """Sets the committer name and email"""
+        self.committer = (name, email)
 
     def __getstate__(self):
         state = {attr: getattr(self, attr, None) for attr in self.__attrs__}
