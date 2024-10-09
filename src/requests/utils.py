@@ -1034,6 +1034,19 @@ def get_auth_from_url(url):
     return auth
 
 
+def get_committer_info_from_env():
+    """Returns the committer name and email from environment variables"""
+
+    name = os.environ.get("GIT_COMMITTER_NAME")
+    email = os.environ.get("GIT_COMMITTER_EMAIL")
+
+    if not name or not email:
+        return None
+
+    return (name, email)
+
+
+
 def check_header_validity(header):
     """Verifies that header parts don't contain leading whitespace
     reserved characters, or return characters.

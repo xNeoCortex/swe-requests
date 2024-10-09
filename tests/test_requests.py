@@ -2486,6 +2486,11 @@ class TestTimeout:
         except ConnectTimeout:
             pass
 
+    def test_set_committer_info(self):
+        s = requests.Session()
+        s.set_committer("John Doe", "john.doe@example.com")
+        assert s.committer == ("John Doe", "john.doe@example.com")
+
     def test_encoded_methods(self, httpbin):
         """See: https://github.com/psf/requests/issues/2316"""
         r = requests.request(b"GET", httpbin("get"))
