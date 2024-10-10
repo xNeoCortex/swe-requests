@@ -2835,7 +2835,7 @@ class TestPreparingURLs:
 
         with server as (host, port):
             url = f"https://{host}:{port}"
-            r1 = s.get(url, verify=False)
+            r1 = s.get(url, verify=False, timeout=30)
             assert r1.status_code == 200
 
             # Cannot verify self-signed certificate
