@@ -46,7 +46,7 @@ class TestTestServer:
         )
 
         with server as (host, port):
-            r = requests.get(f"http://{host}:{port}")
+            r = requests.get(f"http://{host}:{port}", timeout=10)
 
             assert r.status_code == 200
             assert r.text == "roflol"
