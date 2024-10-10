@@ -2840,7 +2840,7 @@ class TestPreparingURLs:
 
             # Cannot verify self-signed certificate
             with pytest.raises(requests.exceptions.SSLError):
-                s.get(url)
+                s.get(url, timeout=30)
 
             close_server.set()
         assert 2 == len(s.adapters["https://"].poolmanager.pools)
