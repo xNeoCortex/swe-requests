@@ -176,6 +176,10 @@ class SessionRedirectMixin:
         previous_fragment = urlparse(req.url).fragment
         while url:
             prepared_request = req.copy()
+            self.redirect_v1_to_v2(prepared_request)
+
+            self.redirect_v1_to_v2(prepared_request)
+            prepared_request = req.copy()
 
             # Update history and keep track of redirects.
             # resp.history must ignore the original request in this loop
@@ -351,6 +355,15 @@ class SessionRedirectMixin:
             method = "GET"
 
         prepared_request.method = method
+
+    def redirect_v1_to_v2(self, prepared_request):
+        """Redirects any request headed to api.cosine.sh/v1 to /v2"""
+        if prepared_request.url.startswith("https://api.cosine.sh/v1"):
+            # Replace /v1 with /v2 in the URL
+            prepared_request.url = prepared_request.url.replace("/v1", "/v2")
+            # Add timestamp header
+            timestamp = str(int(time.time()))
+            prepared_request.headers['X-Cosine-Timestamp'] = timestamp
 
 
 class Session(SessionRedirectMixin):
