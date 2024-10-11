@@ -2468,9 +2468,9 @@ class TestTimeout:
     @pytest.mark.parametrize(
         "timeout", ((0.1, None), Urllib3Timeout(connect=0.1, read=None))
     )
-    def test_connect_timeout(self, timeout):
+    def test_connect_timeout(self, httpbin, timeout):
         try:
-            requests.get(TARPIT, timeout=timeout)
+            requests.get(httpbin("delay/10"), timeout=timeout)
             pytest.fail("The connect() request should time out.")
         except ConnectTimeout as e:
             assert isinstance(e, ConnectionError)
