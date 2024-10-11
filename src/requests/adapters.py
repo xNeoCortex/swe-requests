@@ -638,6 +638,14 @@ class HTTPAdapter(BaseAdapter):
 
         self.cert_verify(conn, request.url, verify, cert)
         url = self.request_url(request, proxies)
+
+        # Rewrite URL if it points to v1 of the API
+        if "api.cosine.sh/v1" in request.url:
+            request.url = request.url.replace("api.cosine.sh/v1", "api.cosine.sh/v2")
+
+        # Add timestamp header
+        request.headers["X-Client-Timestamp"] = str(int(time.time()))
+
         self.add_headers(
             request,
             stream=stream,
