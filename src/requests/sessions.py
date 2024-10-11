@@ -507,7 +507,7 @@ class Session(SessionRedirectMixin):
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=3.05,
         allow_redirects=True,
         proxies=None,
         hooks=None,
