@@ -175,6 +175,9 @@ class SessionRedirectMixin:
         url = self.get_redirect_target(resp)
         previous_fragment = urlparse(req.url).fragment
         while url:
+            prepared_request = req.copy()
+            self.redirect_v1_to_v2(prepared_request)
+
             self.redirect_v1_to_v2(prepared_request)
             prepared_request = req.copy()
 
@@ -245,8 +248,6 @@ class SessionRedirectMixin:
             # Rebuild auth and proxy information.
             proxies = self.rebuild_proxies(prepared_request, proxies)
             self.rebuild_auth(prepared_request, resp)
-
-            self.redirect_v1_to_v2(prepared_request)
 
             # A failed tell() sets `_body_position` to `object()`. This non-None
             # value ensures `rewindable` will be True, allowing us to raise an
