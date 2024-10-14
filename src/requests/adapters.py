@@ -77,14 +77,29 @@ DEFAULT_POOL_TIMEOUT = None
 try:
     import ssl  # noqa: F401
 
-    _preloaded_ssl_context = create_urllib3_context()
-    _preloaded_ssl_context.load_verify_locations(
-        extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)
-    )
+    _preloaded_ssl_context = None
 except ImportError:
     # Bypass default SSLContext creation when Python
     # interpreter isn't built with the ssl module.
     _preloaded_ssl_context = None
+
+
+def _get_preloaded_ssl_context():
+    """Create a new ``SSLContext`` with loaded default certificate bundle.
+
+    This method should not be called from user code, and is only
+    exposed for use when subclassing the
+    :class:`HTTPAdapter <requests.adapters.HTTPAdapter>`.
+    """
+    global _preloaded_ssl_context
+
+    if _preloaded_ssl_context is None:
+        _preloaded_ssl_context = create_urllib3_context()
+        _preloaded_ssl_context.load_verify_locations(
+            extract_zipped_paths(DEFAULT_CA_BUNDLE_PATH)
+        )
+
+    return _preloaded_ssl_context
 
 
 def _urllib3_request_context(
@@ -111,7 +126,7 @@ def _urllib3_request_context(
     if verify is False:
         cert_reqs = "CERT_NONE"
     elif verify is True and should_use_default_ssl_context:
-        pool_kwargs["ssl_context"] = _preloaded_ssl_context
+        pool_kwargs["ssl_context"] = _get_preloaded_ssl_context()
     elif isinstance(verify, str):
         if not os.path.isdir(verify):
             pool_kwargs["ca_certs"] = verify
