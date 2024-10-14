@@ -2465,6 +2465,22 @@ class TestTimeout:
         except ReadTimeout:
             pass
 
+    def test_session_default_timeout(self, httpbin):
+        s = requests.Session()
+        try:
+            s.get(httpbin("delay/10"))
+            pytest.fail("The recv() request should time out.")
+        except Timeout:
+            pass
+
+    def test_session_default_timeout_with_custom(self, httpbin):
+        s = requests.Session()
+        try:
+            s.get(httpbin("delay/10"), timeout=5)
+            pytest.fail("The recv() request should time out.")
+        except Timeout:
+            pass
+
     @pytest.mark.parametrize(
         "timeout", ((0.1, None), Urllib3Timeout(connect=0.1, read=None))
     )
