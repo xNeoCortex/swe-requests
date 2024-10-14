@@ -385,6 +385,7 @@ class Session(SessionRedirectMixin):
         "stream",
         "trust_env",
         "max_redirects",
+        "timeout",
     ]
 
     def __init__(self):
@@ -432,6 +433,9 @@ class Session(SessionRedirectMixin):
         #: This defaults to requests.models.DEFAULT_REDIRECT_LIMIT, which is
         #: 30.
         self.max_redirects = DEFAULT_REDIRECT_LIMIT
+
+        #: Default timeout for all requests
+        self.timeout = 20
 
         #: Trust environment settings for proxy configuration, default
         #: authentication and similar.
@@ -680,6 +684,7 @@ class Session(SessionRedirectMixin):
         kwargs.setdefault("stream", self.stream)
         kwargs.setdefault("verify", self.verify)
         kwargs.setdefault("cert", self.cert)
+        kwargs.setdefault("timeout", self.timeout)
         if "proxies" not in kwargs:
             kwargs["proxies"] = resolve_proxies(request, self.proxies, self.trust_env)
 
