@@ -17,6 +17,7 @@ from urllib3.util import Timeout as Urllib3Timeout
 
 import requests
 from requests.adapters import HTTPAdapter
+from requests.adapters import HTTPAdapter
 from requests.compat import (
     JSONDecodeError,
     Morsel,

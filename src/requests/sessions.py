@@ -385,6 +385,8 @@ class Session(SessionRedirectMixin):
         "stream",
         "trust_env",
         "timeout",
+        "stream",
+        "trust_env",
         "max_redirects",
     ]
 
