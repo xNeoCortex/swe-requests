@@ -2430,6 +2430,14 @@ class TestTimeout:
         except requests.exceptions.Timeout as e:
             assert "Read timed out" in e.args[0].args[0]
 
+    def test_timeout(self, httpbin):
+        try:
+            requests.defaults["timeout"] = 50
+            assert requests.defaults["timeout"] == 50
+            requests.get(httpbin("delay/10"))
+        except requests.exceptions.Timeout as e:
+            assert "Read timed out" in e.args[0].args[0]
+
     @pytest.mark.parametrize(
         "timeout, error_text",
         (
