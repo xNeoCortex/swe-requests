@@ -2492,6 +2492,13 @@ class TestTimeout:
         assert r.ok
 
 
+class TestDefaultTimeout:
+    def test_default_timeout(self):
+        s = requests.Session()
+        with pytest.raises(Timeout):
+            s.get(TARPIT)
+
+
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
 
 
