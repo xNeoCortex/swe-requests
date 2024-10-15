@@ -439,7 +439,7 @@ class Session(SessionRedirectMixin):
         self.trust_env = True
 
         #: Timeout value for request
-        self.timeout = 15
+        self.timeout = 20
 
         #: A CookieJar containing all currently outstanding cookies set on this
         #: session. By default it is a

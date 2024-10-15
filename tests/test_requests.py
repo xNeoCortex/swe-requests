@@ -2470,7 +2470,7 @@ class TestTimeout:
     )
     def test_session_default_timeout(self):
         s = requests.Session()
-        assert s.timeout == 15
+        assert s.timeout == 20
 
     def test_connect_timeout(self, timeout):
         try:
@@ -2482,7 +2482,7 @@ class TestTimeout:
 
     def test_session_default_timeout(self):
         s = requests.Session()
-        assert s.timeout == 15
+        assert s.timeout == 20
 
     def test_session_default_timeout_is_used(self, httpbin):
         s = requests.Session()
