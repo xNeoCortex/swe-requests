@@ -2468,6 +2468,10 @@ class TestTimeout:
     @pytest.mark.parametrize(
         "timeout", ((0.1, None), Urllib3Timeout(connect=0.1, read=None))
     )
+    def test_session_default_timeout(self):
+        s = requests.Session()
+        assert s.timeout == 15
+
     def test_connect_timeout(self, timeout):
         try:
             requests.get(TARPIT, timeout=timeout)
@@ -2475,6 +2479,15 @@ class TestTimeout:
         except ConnectTimeout as e:
             assert isinstance(e, ConnectionError)
             assert isinstance(e, Timeout)
+
+    def test_session_default_timeout(self):
+        s = requests.Session()
+        assert s.timeout == 15
+
+    def test_session_default_timeout_is_used(self, httpbin):
+        s = requests.Session()
+        with pytest.raises(Timeout):
+            s.get(httpbin("delay/10"))
 
     @pytest.mark.parametrize(
         "timeout", ((0.1, 0.1), Urllib3Timeout(connect=0.1, read=0.1))

@@ -379,6 +379,7 @@ class Session(SessionRedirectMixin):
         "proxies",
         "hooks",
         "params",
+        "timeout",
         "verify",
         "cert",
         "adapters",
@@ -436,6 +437,9 @@ class Session(SessionRedirectMixin):
         #: Trust environment settings for proxy configuration, default
         #: authentication and similar.
         self.trust_env = True
+
+        #: Timeout value for request
+        self.timeout = 15
 
         #: A CookieJar containing all currently outstanding cookies set on this
         #: session. By default it is a
@@ -680,6 +684,7 @@ class Session(SessionRedirectMixin):
         kwargs.setdefault("stream", self.stream)
         kwargs.setdefault("verify", self.verify)
         kwargs.setdefault("cert", self.cert)
+        kwargs.setdefault("timeout", self.timeout)
         if "proxies" not in kwargs:
             kwargs["proxies"] = resolve_proxies(request, self.proxies, self.trust_env)
 
