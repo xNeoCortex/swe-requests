@@ -410,6 +410,9 @@ class Session(SessionRedirectMixin):
         #: representing multivalued query parameters.
         self.params = {}
 
+        #: Timeout seconds for each :class:`Request <Request>`.
+        self.timeout = 30
+
         #: Stream response content default.
         self.stream = False
 
