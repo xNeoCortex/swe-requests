@@ -17,7 +17,6 @@ from urllib3.util import Timeout as Urllib3Timeout
 
 import requests
 from requests.adapters import HTTPAdapter
-from requests.adapters import HTTPAdapter
 from requests.auth import HTTPDigestAuth, _basic_auth_str
 from requests.compat import (
     JSONDecodeError,
