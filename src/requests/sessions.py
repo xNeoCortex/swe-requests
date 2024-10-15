@@ -680,6 +680,7 @@ class Session(SessionRedirectMixin):
         kwargs.setdefault("stream", self.stream)
         kwargs.setdefault("verify", self.verify)
         kwargs.setdefault("cert", self.cert)
+        kwargs.setdefault("timeout", 30)
         if "proxies" not in kwargs:
             kwargs["proxies"] = resolve_proxies(request, self.proxies, self.trust_env)
 
