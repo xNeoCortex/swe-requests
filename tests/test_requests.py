@@ -46,8 +46,8 @@ from requests.exceptions import (
 )
 from requests.exceptions import SSLError as RequestsSSLError
 from requests.exceptions import Timeout, TooManyRedirects, UnrewindableBodyError
-from requests.hooks import default_hooks
-from requests.models import PreparedRequest, urlencode
+from requests.hooks import default_hooks 
+from requests.models import PreparedRequest, Response, urlencode 
 from requests.sessions import SessionRedirectMixin
 from requests.structures import CaseInsensitiveDict
 
@@ -2492,6 +2492,47 @@ class TestTimeout:
         assert r.ok
 
 
+class TestDefaultTimeout:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.original_send = HTTPAdapter.send
+
+    def teardown_method(self):
+        HTTPAdapter.send = self.original_send
+
+    def test_default_timeout(self):
+        """Check that default timeout is set to 30 seconds"""
+        s = requests.Session()
+        r = requests.Request(method="GET", url="http://www.example.com")
+        p = r.prepare()
+
+        def mock_send(*args, **kwargs):
+            assert kwargs["timeout"] == 30 
+            resp = Response()
+            resp.status_code = 200 
+            resp.request = p 
+            return resp 
+
+       HTTPAdapter.send = mock_send 
+
+       s.send(p) 
+
+   def test_no_default_timeout(self): 
+       """Check that default timeout can be overridden""" 
+       s=requests.Session() 
+       r=requests.Request(method="GET", url="http://www.example.com") 
+       p=r.prepare() 
+
+       def mock_send(*args, **kwargs): 
+           assert kwargs["timeout"] ==1000 
+           resp=Response() 
+           resp.status_code=200 
+           resp.request=p 
+           return resp 
+
+      HTTPAdapter.send=mock_send 
+
+      s.send(p ,timeout=1000 ) 
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
 
 
