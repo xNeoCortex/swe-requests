@@ -670,7 +670,7 @@ class Session(SessionRedirectMixin):
 
         return self.request("DELETE", url, **kwargs)
 
-    def send(self, request, **kwargs):
+    def send(self, request, timeout=60, **kwargs):
         """Send a given PreparedRequest.
 
         :rtype: requests.Response
