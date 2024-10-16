@@ -109,6 +109,13 @@ class TestRequests:
         with pytest.raises(exception):
             requests.get(url)
 
+        with pytest.raises(TypeError):
+            requests.session().request("GET", "http://example.com", timeout="foo")
+        with pytest.raises(ValueError):
+            requests.session().request("GET", "http://example.com")
+        with pytest.raises(ConnectionError):
+            requests.session().request("GET", TARPIT)
+
     def test_basic_building(self):
         req = requests.Request()
         req.url = "http://kennethreitz.org/"
