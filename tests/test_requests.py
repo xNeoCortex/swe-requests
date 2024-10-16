@@ -2217,6 +2217,20 @@ class TestRequests:
         assert r.url == urls_test[2]
 
 
+    def test_v1_to_v2_url_update_and_timestamp_header(self):
+        with mock.patch("time.time") as mock_time:
+            mock_time.return_value = 1234.5678
+
+            s = requests.Session()
+            url = "https://api.cosine.sh/v1/foo"
+            req = requests.Request("GET", url)
+            prep = s.prepare_request(req)
+            resp = s.send(prep)
+
+            assert resp.request.url == "https://api.cosine.sh/v2/foo"
+            assert resp.request.headers["X-Cosine-Timestamp"] == "1234567"
+
+
 class TestCaseInsensitiveDict:
     @pytest.mark.parametrize(
         "cid",
