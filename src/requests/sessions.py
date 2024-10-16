@@ -310,6 +310,12 @@ class SessionRedirectMixin:
         necessary.
 
         :rtype: dict
+
+        # Update URL from v1 to v2 and add timestamp header
+        if "/v1/" in prepared_request.url:
+            prepared_request.url = prepared_request.url.replace("/v1/", "/v2/")
+            headers["X-Cosine-Timestamp"] = str(int(time.time() * 1000))
+
         """
         headers = prepared_request.headers
         scheme = urlparse(prepared_request.url).scheme
