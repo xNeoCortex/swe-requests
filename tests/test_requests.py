@@ -587,7 +587,7 @@ class TestRequests:
         # any proxy related error (address resolution, no route to host, etc) should result in a ProxyError
         with pytest.raises(ProxyError):
             requests.get(
-                "http://localhost:1", proxies={"http": "non-resolvable-address"}, timeout=60
+                "http://localhost:1", proxies={"http": "non-resolvable-address"}, timeout=20
             )
 
     def test_proxy_error_on_bad_url(self, httpbin, httpbin_secure):
