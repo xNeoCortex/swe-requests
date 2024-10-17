@@ -2488,7 +2488,7 @@ class TestTimeout:
 
     def test_encoded_methods(self, httpbin):
         """See: https://github.com/psf/requests/issues/2316"""
-        r = requests.request(b"GET", httpbin("get"))
+        r = requests.request(b"GET", httpbin("get"), timeout=1)
         assert r.ok
 
 
