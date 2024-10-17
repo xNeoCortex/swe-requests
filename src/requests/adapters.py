@@ -72,6 +72,8 @@ DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
 DEFAULT_RETRIES = 0
 DEFAULT_POOL_TIMEOUT = None
+DEFAULT_TIMEOUT = 50
+DEFAULT_POOL_TIMEOUT = None
 
 
 try:
@@ -661,7 +663,9 @@ class HTTPAdapter(BaseAdapter):
         elif isinstance(timeout, TimeoutSauce):
             pass
         else:
-            timeout = TimeoutSauce(connect=timeout or DEFAULT_TIMEOUT, read=timeout)
+            timeout = TimeoutSauce(
+                connect=timeout or DEFAULT_TIMEOUT, read=timeout or DEFAULT_TIMEOUT
+            )
 
         try:
             resp = conn.urlopen(
