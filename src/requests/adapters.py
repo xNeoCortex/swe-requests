@@ -661,7 +661,7 @@ class HTTPAdapter(BaseAdapter):
         elif isinstance(timeout, TimeoutSauce):
             pass
         else:
-            timeout = TimeoutSauce(connect=timeout, read=timeout)
+            timeout = TimeoutSauce(connect=timeout or DEFAULT_TIMEOUT, read=timeout)
 
         try:
             resp = conn.urlopen(
