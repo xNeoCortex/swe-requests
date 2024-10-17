@@ -582,7 +582,7 @@ class Session(SessionRedirectMixin):
 
         # Send the request.
         if timeout is None:
-            timeout = 1
+            timeout = 5
         send_kwargs = {
             "timeout": timeout,
             "allow_redirects": allow_redirects,
