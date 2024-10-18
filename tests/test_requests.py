@@ -2486,6 +2486,10 @@ class TestTimeout:
         except ConnectTimeout:
             pass
 
+    def test_long_timeout(self, httpbin):
+        r = requests.get(httpbin("get"), timeout=40)
+        assert r.status_code == 200
+
     def test_encoded_methods(self, httpbin):
         """See: https://github.com/psf/requests/issues/2316"""
         r = requests.request(b"GET", httpbin("get"))
