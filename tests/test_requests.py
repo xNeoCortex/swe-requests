@@ -2492,6 +2492,18 @@ class TestTimeout:
         assert r.ok
 
 
+class TestDefaultTimeout:
+    def test_default_timeout(self, httpbin):
+        with pytest.raises(Timeout):
+            requests.get(httpbin("delay/20"))
+
+    def test_no_default_timeout_when_specified(self, httpbin):
+        try:
+            requests.get(httpbin("delay/1"), timeout=5)
+        except Timeout:
+            pytest.fail("The request should not have timed out.")
+
+
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
 
 
