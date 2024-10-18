@@ -2981,3 +2981,17 @@ def test_json_decode_errors_are_serializable_deserializable():
     )
     deserialized_error = pickle.loads(pickle.dumps(json_decode_error))
     assert repr(json_decode_error) == repr(deserialized_error)
+
+
+class TestDefaultTimeout:
+    def test_default_timeout_can_be_overridden(self, httpbin):
+        try:
+            requests.get(httpbin("delay/10"), timeout=2.0)
+            pytest.fail("The request should time out.")
+        except requests.exceptions.Timeout:
+            pass
+
+    @pytest.mark.parametrize("timeout", (None, (None, None)))
+    def test_backward_compatibility_with_timeout_none(self, httpbin, timeout):
+        r = requests.get(httpbin("get"), timeout=timeout)
+        assert r.status_code == 200
