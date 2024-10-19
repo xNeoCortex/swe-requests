@@ -2495,6 +2495,20 @@ class TestTimeout:
 SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
 
 
+def test_default_timeout(httpbin):
+    """Default timeout is applied if no other timeout value is provided"""
+    adapter = HTTPAdapter()
+    session = requests.Session()
+    session.mount("http://", adapter)
+    with mock.patch.object(adapter, "send", autospec=True) as mock_send:
+        session.get(httpbin("get"))
+        args, kwargs = mock_send.call_args
+        assert kwargs["timeout"] == 15
+
+
+SendCall = collections.namedtuple("SendCall", ("args", "kwargs"))
+
+
 class RedirectSession(SessionRedirectMixin):
     def __init__(self, order_of_redirects):
         self.redirects = order_of_redirects
