@@ -6,6 +6,8 @@ This module contains the authentication handlers for Requests.
 """
 
 import hashlib
+from hashlib import md5 as _md5
+import hashlib
 import os
 import re
 import threading
@@ -145,7 +147,9 @@ class HTTPDigestAuth(AuthBase):
             def md5_utf8(x):
                 if isinstance(x, str):
                     x = x.encode("utf-8")
-                return hashlib.md5(x, usedforsecurity=False).hexdigest()
+                if hasattr(_md5, "usedforsecurity"):
+                    return hashlib.md5(x, usedforsecurity=False).hexdigest()
+                return hashlib.md5(x).hexdigest()
 
             hash_utf8 = md5_utf8
         elif _algorithm == "SHA":
