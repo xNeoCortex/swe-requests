@@ -2424,6 +2424,12 @@ class TestMorselToCookieMaxAge:
 
 
 class TestTimeout:
+    def test_nonstream_timeout(self, httpbin):
+        try:
+            requests.get(httpbin("delay/40"))
+        except requests.exceptions.Timeout as e:
+            assert "Read timed out" in e.args[0].args[0]
+
     def test_stream_timeout(self, httpbin):
         try:
             requests.get(httpbin("delay/10"), timeout=2.0)
