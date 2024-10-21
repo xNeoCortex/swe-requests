@@ -663,6 +663,9 @@ class HTTPAdapter(BaseAdapter):
         else:
             timeout = TimeoutSauce(connect=timeout, read=timeout)
 
+        if not isinstance(timeout, TimeoutSauce):
+            timeout = TimeoutSauce(connect=timeout, read=timeout)
+
         try:
             resp = conn.urlopen(
                 method=request.method,
