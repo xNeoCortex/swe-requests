@@ -784,6 +784,13 @@ class Session(SessionRedirectMixin):
 
         :rtype: requests.adapters.BaseAdapter
         """
+        if url is None:
+            raise InvalidSchema("No schema supplied. See https://github.com/psf/requests/issues/6535 for details.")
+        """
+        Returns the appropriate connection adapter for the given URL.
+
+        :rtype: requests.adapters.BaseAdapter
+        """
         for prefix, adapter in self.adapters.items():
             if url.lower().startswith(prefix.lower()):
                 return adapter
