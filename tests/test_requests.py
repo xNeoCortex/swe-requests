@@ -2458,7 +2458,19 @@ class TestTimeout:
     @pytest.mark.parametrize(
         "timeout", ((None, 0.1), Urllib3Timeout(connect=None, read=0.1))
     )
-    def test_read_timeout(self, httpbin, timeout):
+    def test_read_timeout(self, httpbin_secure, httpbin_ca_bundle, timeout):
+        """Check that you can set None as a valid read timeout value.
+
+        To actually test this behavior, we'd want to check that setting the
+        read timeout to None actually lets the request block past the system default
+        read timeout. However, this would make the test suite unbearably slow.
+        Instead we verify that setting the read timeout to None does not prevent the
+        request from succeeding.
+
+        """
+        r = requests.get(httpbin_secure("get"), verify=httpbin_ca_bundle)
+        assert r.status_code == 200
+
         try:
             requests.get(httpbin("delay/10"), timeout=timeout)
             pytest.fail("The recv() request should time out.")
