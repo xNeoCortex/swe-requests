@@ -72,6 +72,7 @@ DEFAULT_POOLBLOCK = False
 DEFAULT_POOLSIZE = 10
 DEFAULT_RETRIES = 0
 DEFAULT_POOL_TIMEOUT = None
+DEFAULT_TIMEOUT = 30
 
 
 try:
@@ -205,6 +206,7 @@ class HTTPAdapter(BaseAdapter):
         pool_maxsize=DEFAULT_POOLSIZE,
         max_retries=DEFAULT_RETRIES,
         pool_block=DEFAULT_POOLBLOCK,
+        timeout=DEFAULT_TIMEOUT,
     ):
         if max_retries == DEFAULT_RETRIES:
             self.max_retries = Retry(0, read=False)
