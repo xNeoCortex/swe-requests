@@ -580,6 +580,10 @@ class Session(SessionRedirectMixin):
             prep.url, proxies, stream, verify, cert
         )
 
+        # Timeout
+        if timeout is None:
+            timeout = 30
+
         # Send the request.
         send_kwargs = {
             "timeout": timeout,
